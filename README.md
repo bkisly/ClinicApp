@@ -21,6 +21,8 @@ Samouczek: [Get started with ASP.NET Core MVC](https://learn.microsoft.com/en-us
 
 Napisać program do obsługi przychodni.
 
+### Zadanie 1 - MVC
+
 Lista lekarzy - każdy lekarz ma jedną specjalność ze stałej listy specjalnosci (domowy, laryngolog, dermatolog, okulista, neurolog, ortopeda, pediatra).
 Konto lekarza zakłada dyrektor.
 Lekaz loguje sie za pomocą hasła.
@@ -31,6 +33,8 @@ Pacjent rejestruje się w systemie (zakłada konto), ale zapisy do lekarzy i prz
 
 Grafik na każdy kolejny tydzien: lekaz, dzien, start, koniec  np: Kowalski, 2023-11-08 8.00 12.00. W ramach jednego wpisu w grafiku moze odbyć się wiele wizyt.
 Grafik wpisuje/modyfikuje dyrektor (dodatkowa opcja: kopiuj porzedni tydzień).
+
+### Zadanie 2 - Migracje
 
 Pacjenci moga sie zapisywać/wypisywać z wizyt - każda wizyta trwa 15 minut. Pacjent szuka lekarza po specjalności. Wyświetlane maja być wszystkie wolne terminy wizyty wszystkich lekarzy danej specjalności w kolejnosci chronologicznej.
 Lekaz na wizycie wpisuje do wizyty opis (dowolny tekst).
