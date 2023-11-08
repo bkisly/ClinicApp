@@ -1,7 +1,5 @@
-﻿using ClinicApp.Data;
-using ClinicApp.Models;
+﻿using ClinicApp.Models;
 using ClinicApp.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace ClinicApp.Infrastructure
 {
@@ -20,13 +18,13 @@ namespace ClinicApp.Infrastructure
 
         public static IEnumerable<Speciality> GetSpecialities() => new[]
         {
-            new Speciality { Name = "GP" },
-            new Speciality { Name = "Laryngologist" },
-            new Speciality { Name = "Dermatologist" },
-            new Speciality { Name = "Opthalmologist" },
-            new Speciality { Name = "Neurologist" },
-            new Speciality { Name = "Orthopedist" },
-            new Speciality { Name = "Pediatrist" },
+            new Speciality { Id = 1, Name = "GP" },
+            new Speciality { Id = 2, Name = "Laryngologist" },
+            new Speciality { Id = 3, Name = "Dermatologist" },
+            new Speciality { Id = 4, Name = "Opthalmologist" },
+            new Speciality { Id = 5, Name = "Neurologist" },
+            new Speciality { Id = 6, Name = "Orthopedist" },
+            new Speciality { Id = 7, Name = "Pediatrist" },
         };
     }
 }

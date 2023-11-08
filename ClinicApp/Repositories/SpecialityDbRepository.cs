@@ -7,7 +7,7 @@ namespace ClinicApp.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        public IQueryable Specialities => _context.Specialities;
+        public IQueryable<Speciality> Specialities => _context.Specialities;
 
         public SpecialityDbRepository(ApplicationDbContext context)
         {
