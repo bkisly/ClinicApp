@@ -4,7 +4,7 @@ namespace ClinicApp.Repositories
 {
     public interface ISpecialityRepository
     {
-        IQueryable Specialities { get; }
+        IQueryable<Speciality> Specialities { get; }
         void AddSpeciality(Speciality speciality);
     }
 }
