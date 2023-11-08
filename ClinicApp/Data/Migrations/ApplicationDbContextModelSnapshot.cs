@@ -33,7 +33,7 @@ namespace ClinicApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specialities");
+                    b.ToTable("Specialities", (string)null);
                 });
 #pragma warning restore 612, 618
         }

@@ -6,7 +6,7 @@ namespace ClinicApp.Models
     {
         public byte Id { get; set; }
 
-        [StringLength(maximumLength: 256)]
+        [Required, StringLength(maximumLength: 256)]
         public string Name { get; set; } = string.Empty;
     }
 }

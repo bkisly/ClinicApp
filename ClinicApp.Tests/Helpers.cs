@@ -10,7 +10,8 @@ namespace ClinicApp.Tests
     {
         public static ApplicationDbContext CreateInMemoryContext(string dbName)
         {
-            var contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseInMemoryDatabase(dbName).Options;
+            var contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseInMemoryDatabase(dbName)
+                .EnableDetailedErrors().Options;
             return new ApplicationDbContext(contextOptions);
         }
 

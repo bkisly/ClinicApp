@@ -5,7 +5,7 @@ namespace ClinicApp.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<Speciality> Specialities => Set<Speciality>();
+        public virtual DbSet<Speciality> Specialities => Set<Speciality>();
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext>  options) : base(options) { }
     }
