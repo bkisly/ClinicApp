@@ -1,5 +1,6 @@
 ﻿using ClinicApp.Models;
 using ClinicApp.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 namespace ClinicApp.Infrastructure
 {
@@ -13,6 +14,34 @@ namespace ClinicApp.Infrastructure
             foreach (var speciality in GetSpecialities())
             {
                 specialityRepository.AddSpeciality(speciality);
+            }
+        }
+
+        public static async Task EnsureRoles(RoleManager<IdentityRole> roleManager)
+        {
+            var managerRole = new IdentityRole(Constants.Roles.ManagerRoleName);
+            var doctorRole = new IdentityRole(Constants.Roles.DoctorRoleName);
+            var patientRole = new IdentityRole(Constants.Roles.PatientRoleName);
+
+            await roleManager.CreateAsync(managerRole);
+            await roleManager.CreateAsync(doctorRole);
+            await roleManager.CreateAsync(patientRole);
+        }
+
+        public static async Task CreateManagerAccount(UserManager<IdentityUser> userManager, string managerUserName, string managerPassword)
+        {
+            var managerUser = await userManager.FindByNameAsync(managerUserName);
+
+            if (managerUser != null)
+            {
+                if (!await userManager.IsInRoleAsync(managerUser, Constants.Roles.ManagerRoleName))
+                    await userManager.AddToRoleAsync(managerUser, Constants.Roles.ManagerRoleName);
+            }
+            else
+            {
+                managerUser = new IdentityUser(managerUserName);
+                await userManager.CreateAsync(managerUser, managerPassword);
+                await userManager.AddToRoleAsync(managerUser, Constants.Roles.ManagerRoleName);
             }
         }
 
