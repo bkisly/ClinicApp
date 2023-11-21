@@ -2,6 +2,7 @@ using ClinicApp.Data;
 using ClinicApp.Infrastructure;
 using ClinicApp.Models.Users;
 using ClinicApp.Repositories;
+using ClinicApp.Services.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,11 +18,31 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddIdentityCore<Doctor>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddIdentityCore<Doctor>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddIdentityCore<Manager>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddIdentityCore<Patient>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add repositories
 
 builder.Services.AddScoped<ISpecialityRepository, SpecialityDbRepository>();
+
+// Add infrastructural services
+
+builder.Services.AddScoped<IUserDependenciesProvider<IdentityUser>, UserDependenciesProvider<IdentityUser>>();
+builder.Services.AddScoped<IUserDependenciesProvider<Manager>, UserDependenciesProvider<Manager>>();
+builder.Services.AddScoped<IUserDependenciesProvider<Doctor>, UserDependenciesProvider<Doctor>>();
+builder.Services.AddScoped<IUserDependenciesProvider<Patient>, UserDependenciesProvider<Patient>>();
+
+builder.Services.AddScoped<IUserDependenciesFactory, UserDependenciesFactory>();
 
 // Invoke configuration builder
 
@@ -44,7 +65,7 @@ using (var scope = app.Services.CreateScope())
 
     await DataInitializer.EnsureRoles(serviceProvider.GetRequiredService<RoleManager<IdentityRole>>());
     await DataInitializer.CreateManagerAccount(
-        serviceProvider.GetRequiredService<UserManager<IdentityUser>>(), configurationBuilder.ManagerUserName,
+        serviceProvider.GetRequiredService<UserManager<Manager>>(), configurationBuilder.ManagerUserName,
         configurationBuilder.ManagerPassword);
 }
 

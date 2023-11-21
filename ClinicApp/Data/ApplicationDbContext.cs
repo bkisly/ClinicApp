@@ -6,10 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClinicApp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext
     {
         public virtual DbSet<Speciality> Specialities => Set<Speciality>();
         public virtual DbSet<Doctor> Doctors => Set<Doctor>();
+        public virtual DbSet<Patient> Patients => Set<Patient>();
+        public virtual DbSet<Manager> Managers => Set<Manager>();
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext>  options) : base(options) { }
     }

@@ -1,7 +1,9 @@
-﻿namespace ClinicApp.Services.User
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace ClinicApp.Services.User
 {
     public interface IIdentityUserService : IUserService
     {
-        Task SignOut();
+        Task SignOut<TUser>(TUser user) where TUser : IdentityUser;
     }
 }

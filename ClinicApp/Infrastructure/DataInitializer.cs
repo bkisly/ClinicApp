@@ -1,4 +1,5 @@
 ﻿using ClinicApp.Models;
+using ClinicApp.Models.Users;
 using ClinicApp.Repositories;
 using Microsoft.AspNetCore.Identity;
 
@@ -28,7 +29,7 @@ namespace ClinicApp.Infrastructure
             await roleManager.CreateAsync(patientRole);
         }
 
-        public static async Task CreateManagerAccount(UserManager<IdentityUser> userManager, string managerUserName, string managerPassword)
+        public static async Task CreateManagerAccount(UserManager<Manager> userManager, string managerUserName, string managerPassword)
         {
             var managerUser = await userManager.FindByNameAsync(managerUserName);
 
@@ -39,7 +40,7 @@ namespace ClinicApp.Infrastructure
             }
             else
             {
-                managerUser = new IdentityUser(managerUserName);
+                managerUser = new Manager { UserName = managerUserName };
                 await userManager.CreateAsync(managerUser, managerPassword);
                 await userManager.AddToRoleAsync(managerUser, Constants.Roles.ManagerRoleName);
             }

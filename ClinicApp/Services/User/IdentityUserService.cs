@@ -1,32 +1,22 @@
-﻿using ClinicApp.Infrastructure;
-using ClinicApp.Models;
-using ClinicApp.Models.Users;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace ClinicApp.Services.User
 {
     public class IdentityUserService : IIdentityUserService
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly UserManager<Doctor> _doctorUserManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-
-        public IdentityUserService(UserManager<IdentityUser> userManager, UserManager<Doctor> doctorUserManager, SignInManager<IdentityUser> signInManager)
+        public Task RegisterDoctor(string userName, string password, byte specialityId)
         {
-            _userManager = userManager;
-            _doctorUserManager = doctorUserManager;
-            _signInManager = signInManager;
+            throw new NotImplementedException();
         }
 
-        public async Task RegisterDoctor(string userName, string password, byte specialityId)
+        public Task RegisterPatient(string userName, string password)
         {
-            var speciality = new Speciality();
-            var doctor = new Doctor { UserName = userName, Speciality = speciality };
+            throw new NotImplementedException();
         }
 
-        public async Task RegisterPatient(string userName, string password)
+        public Task RegisterManager(string userName, string password)
         {
-
+            throw new NotImplementedException();
         }
 
         public Task SignIn(string userName, string password)
@@ -34,14 +24,9 @@ namespace ClinicApp.Services.User
             throw new NotImplementedException();
         }
 
-        public Task SignOut()
+        public Task SignOut<TUser>(TUser user) where TUser : IdentityUser
         {
             throw new NotImplementedException();
-        }
-
-        private Task RegisterDoctor(string userName, string password)
-        {
-
         }
     }
 }

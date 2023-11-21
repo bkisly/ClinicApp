@@ -34,7 +34,7 @@ namespace ClinicApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specialities");
+                    b.ToTable("Specialities", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
