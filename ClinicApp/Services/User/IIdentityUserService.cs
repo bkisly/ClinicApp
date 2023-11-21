@@ -4,6 +4,6 @@ namespace ClinicApp.Services.User
 {
     public interface IIdentityUserService : IUserService
     {
-        Task SignOut<TUser>(TUser user) where TUser : IdentityUser;
+        Task SignOut(IdentityUser user);
     }
 }

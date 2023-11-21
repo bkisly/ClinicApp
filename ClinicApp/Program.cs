@@ -14,7 +14,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add identity
-
 builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -32,20 +31,15 @@ builder.Services.AddIdentityCore<Patient>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add repositories
-
 builder.Services.AddScoped<ISpecialityRepository, SpecialityDbRepository>();
 
 // Add infrastructural services
+builder.Services.AddScoped<IUserManagerProvider, UserManagerProvider>();
 
-builder.Services.AddScoped<IUserDependenciesProvider<IdentityUser>, UserDependenciesProvider<IdentityUser>>();
-builder.Services.AddScoped<IUserDependenciesProvider<Manager>, UserDependenciesProvider<Manager>>();
-builder.Services.AddScoped<IUserDependenciesProvider<Doctor>, UserDependenciesProvider<Doctor>>();
-builder.Services.AddScoped<IUserDependenciesProvider<Patient>, UserDependenciesProvider<Patient>>();
-
-builder.Services.AddScoped<IUserDependenciesFactory, UserDependenciesFactory>();
+// Add services
+builder.Services.AddScoped<IIdentityUserService, IdentityUserService>();
 
 // Invoke configuration builder
-
 var configurationBuilder = new ClinicConfigurationBuilder(builder.Configuration);
 configurationBuilder.BuildManagerCredentials();
 
@@ -65,7 +59,7 @@ using (var scope = app.Services.CreateScope())
 
     await DataInitializer.EnsureRoles(serviceProvider.GetRequiredService<RoleManager<IdentityRole>>());
     await DataInitializer.CreateManagerAccount(
-        serviceProvider.GetRequiredService<UserManager<Manager>>(), configurationBuilder.ManagerUserName,
+        serviceProvider.GetRequiredService<IIdentityUserService>(), configurationBuilder.ManagerUserName,
         configurationBuilder.ManagerPassword);
 }
 

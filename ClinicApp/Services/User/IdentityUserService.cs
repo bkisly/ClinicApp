@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ClinicApp.Infrastructure;
+using ClinicApp.Models.Users;
+using ClinicApp.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 namespace ClinicApp.Services.User
 {
@@ -24,7 +27,7 @@ namespace ClinicApp.Services.User
             throw new NotImplementedException();
         }
 
-        public Task SignOut<TUser>(TUser user) where TUser : IdentityUser
+        public Task SignOut(IdentityUser user)
         {
             throw new NotImplementedException();
         }
