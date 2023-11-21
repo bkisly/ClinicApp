@@ -5,15 +5,16 @@ namespace ClinicApp.Services.User
 {
     public class UserManagerProvider : IUserManagerProvider
     {
-        private readonly UserManager<IdentityUser> _defaultUserManager;
         private readonly UserManager<Manager> _managerUserManager;
         private readonly UserManager<Doctor> _doctorUserManager;
         private readonly UserManager<Patient> _patientUserManager;
 
+        public UserManager<IdentityUser> DefaultManager { get; }
+
         public UserManagerProvider(UserManager<IdentityUser> defaultUserManager, UserManager<Manager> managerUserManager, 
             UserManager<Doctor> doctorUserManager, UserManager<Patient> patientUserManager)
         {
-            _defaultUserManager = defaultUserManager;
+            DefaultManager = defaultUserManager;
             _managerUserManager = managerUserManager;
             _doctorUserManager = doctorUserManager;
             _patientUserManager = patientUserManager;
@@ -27,7 +28,7 @@ namespace ClinicApp.Services.User
             Manager => _managerUserManager,
             Doctor => _doctorUserManager,
             Patient => _patientUserManager,
-            _ => _defaultUserManager
+            _ => DefaultManager
         };
     }
 }
