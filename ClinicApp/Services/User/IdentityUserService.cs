@@ -24,6 +24,9 @@ namespace ClinicApp.Services.User
             var doctor = new Doctor { UserName = userName, Speciality = speciality };
             var mgr = _userManagerProvider.Provide(doctor);
 
+            if (await mgr.FindByNameAsync(userName) != null)
+                return;
+
             await mgr.CreateAsync(doctor, password);
             await mgr.AddToRoleAsync(doctor, Constants.Roles.DoctorRoleName);
         }
@@ -33,7 +36,10 @@ namespace ClinicApp.Services.User
             var patient = new Patient { UserName = userName };
             var mgr = _userManagerProvider.Provide(patient);
 
-            await mgr.CreateAsync(patient);
+            if (await mgr.FindByNameAsync(userName) != null)
+                return;
+
+            await mgr.CreateAsync(patient, password);
             await mgr.AddToRoleAsync(patient, Constants.Roles.PatientRoleName);
         }
 
@@ -42,7 +48,10 @@ namespace ClinicApp.Services.User
             var manager = new Manager { UserName = userName };
             var mgr = _userManagerProvider.Provide(manager);
 
-            await mgr.CreateAsync(manager);
+            if (await mgr.FindByNameAsync(userName) != null)
+                return;
+
+            await mgr.CreateAsync(manager, password);
             await mgr.AddToRoleAsync(manager, Constants.Roles.ManagerRoleName);
         }
 
