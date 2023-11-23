@@ -1,5 +1,7 @@
 ﻿using ClinicApp.Models.Dto;
 using ClinicApp.Services.User;
+using ClinicApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicApp.Controllers
@@ -35,25 +37,25 @@ namespace ClinicApp.Controllers
 
         public IActionResult Register()
         {
-            return View(new UserCredentialsDto());
+            return View(new RegistrationViewModel());
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(UserCredentialsDto credentials)
+        public async Task<IActionResult> Register(RegistrationViewModel registrationViewModel)
         {
             if (ModelState.IsValid)
             {
-                var result = await _identityUserService.RegisterPatient(credentials.UserName, credentials.Password);
+                var result = await _identityUserService.RegisterPatient(registrationViewModel.UserName, registrationViewModel.Password);
 
                 if (result == RegistrationResult.UserExists)
                     ModelState.AddModelError("UserName", "A user with the specified name already exists.");
                 else return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            return View(credentials);
+            return View(registrationViewModel);
         }
 
-        [HttpPost]
+        [Authorize, HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _identityUserService.SignOut();
