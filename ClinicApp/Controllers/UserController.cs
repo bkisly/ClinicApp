@@ -8,16 +8,18 @@ namespace ClinicApp.Controllers
 {
     public class UserController : Controller
     {
-        private readonly IIdentityUserService _identityUserService;
+        private readonly IIdentityAuthenticationService _authenticationService;
+        private readonly IRegistrationService _registrationService;
 
-        public UserController(IIdentityUserService identityUserService)
+        public UserController(IIdentityAuthenticationService authenticationService, IRegistrationService registrationService)
         {
-            _identityUserService = identityUserService;
+            _authenticationService = authenticationService;
+            _registrationService = registrationService;
         }
 
         public IActionResult Login()
         {
-            if (_identityUserService.IsSignedIn(User))
+            if (_authenticationService.IsSignedIn(User))
                 return RedirectToAction(nameof(HomeController.Index), "Home");
 
             return View(new UserCredentialsDto());
@@ -28,7 +30,7 @@ namespace ClinicApp.Controllers
         {
             if (!ModelState.IsValid) return View(credentials);
 
-            if ((await _identityUserService.SignIn(credentials.UserName, credentials.Password)).Succeeded)
+            if ((await _authenticationService.SignIn(credentials.UserName, credentials.Password)).Succeeded)
                 return RedirectToAction(nameof(HomeController.Index), "Home");
 
             ModelState.AddModelError("", "Invalid credentials. Try again.");
@@ -45,7 +47,7 @@ namespace ClinicApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _identityUserService.RegisterPatient(registrationViewModel.UserName, registrationViewModel.Password);
+                var result = await _registrationService.RegisterPatient(registrationViewModel.UserName, registrationViewModel.Password);
 
                 if (result == RegistrationResult.UserExists)
                     ModelState.AddModelError("UserName", "A user with the specified name already exists.");
@@ -58,7 +60,7 @@ namespace ClinicApp.Controllers
         [Authorize, HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await _identityUserService.SignOut();
+            await _authenticationService.SignOut();
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
     }

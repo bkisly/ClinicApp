@@ -6,7 +6,7 @@ using Moq;
 
 namespace ClinicApp.Tests
 {
-    public class IdentityUserServiceTests
+    public class RegistrationServiceTests
     {
         [Fact]
         public async Task CanRegisterDoctors()
@@ -17,7 +17,7 @@ namespace ClinicApp.Tests
             var specialities = new List<Speciality>(DataInitializer.GetSpecialities());
             var providerMock = Helpers.GetUserManagerProviderMock(doctors);
             var repositoryMock = Helpers.GetSpecialityRepositoryMock(specialities);
-            var service = new IdentityUserService(providerMock.Object, null!, repositoryMock.Object);
+            var service = new RegistrationService(providerMock.Object, repositoryMock.Object);
 
             // Act
 
@@ -51,7 +51,7 @@ namespace ClinicApp.Tests
 
             var patients = new List<Patient>();
             var providerMock = Helpers.GetUserManagerProviderMock(patients);
-            var service = new IdentityUserService(providerMock.Object, null!, null!);
+            var service = new RegistrationService(providerMock.Object, null!);
 
             // Act
 
@@ -83,7 +83,7 @@ namespace ClinicApp.Tests
 
             var managers = new List<Manager>();
             var providerMock = Helpers.GetUserManagerProviderMock(managers);
-            var service = new IdentityUserService(providerMock.Object, null!, null!);
+            var service = new RegistrationService(providerMock.Object, null!);
 
             // Act
 
@@ -117,7 +117,7 @@ namespace ClinicApp.Tests
             var specialities = new List<Speciality>(DataInitializer.GetSpecialities());
             var repositoryMock = Helpers.GetSpecialityRepositoryMock(specialities);
             var providerMock = Helpers.GetUserManagerProviderMock(doctors);
-            var service = new IdentityUserService(providerMock.Object, null!, repositoryMock.Object);
+            var service = new RegistrationService(providerMock.Object, repositoryMock.Object);
 
             // Act
 
@@ -137,7 +137,7 @@ namespace ClinicApp.Tests
 
             var patients = new List<Patient> {  new() { UserName = "patient1" } };
             var providerMock = Helpers.GetUserManagerProviderMock(patients);
-            var service = new IdentityUserService(providerMock.Object, null!, null!);
+            var service = new RegistrationService(providerMock.Object, null!);
 
             // Act
 
@@ -157,7 +157,7 @@ namespace ClinicApp.Tests
 
             var managers = new List<Manager> { new() { UserName = "manager1" } };
             var providerMock = Helpers.GetUserManagerProviderMock(managers);
-            var service = new IdentityUserService(providerMock.Object, null!, null!);
+            var service = new RegistrationService(providerMock.Object, null!);
 
             // Act
 

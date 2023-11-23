@@ -37,7 +37,8 @@ builder.Services.AddScoped<ISpecialityRepository, SpecialityDbRepository>();
 builder.Services.AddScoped<IUserManagerProvider, UserManagerProvider>();
 
 // Add services
-builder.Services.AddScoped<IIdentityUserService, IdentityUserService>();
+builder.Services.AddScoped<IIdentityAuthenticationService, IdentityAuthenticationService>();
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 
 // Invoke configuration builder
 var configurationBuilder = new ClinicConfigurationBuilder(builder.Configuration);
@@ -65,7 +66,7 @@ using (var scope = app.Services.CreateScope())
 
     await DataInitializer.EnsureRoles(serviceProvider.GetRequiredService<RoleManager<IdentityRole>>());
     await DataInitializer.CreateManagerAccount(
-        serviceProvider.GetRequiredService<IIdentityUserService>(), configurationBuilder.ManagerUserName,
+        serviceProvider.GetRequiredService<IRegistrationService>(), configurationBuilder.ManagerUserName,
         configurationBuilder.ManagerPassword);
 }
 

@@ -30,9 +30,9 @@ namespace ClinicApp.Infrastructure
             await roleManager.CreateAsync(patientRole);
         }
 
-        public static async Task CreateManagerAccount(IIdentityUserService userService, string managerUserName, string managerPassword)
+        public static async Task CreateManagerAccount(IRegistrationService registrationService, string managerUserName, string managerPassword)
         {
-            await userService.RegisterManager(managerUserName, managerPassword);
+            await registrationService.RegisterManager(managerUserName, managerPassword);
         }
 
         public static IEnumerable<Speciality> GetSpecialities() => new[]

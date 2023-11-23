@@ -1,21 +1,17 @@
-﻿using System.Security.Claims;
-using ClinicApp.Infrastructure;
+﻿using ClinicApp.Infrastructure;
 using ClinicApp.Models.Users;
 using ClinicApp.Repositories;
-using Microsoft.AspNetCore.Identity;
 
 namespace ClinicApp.Services.User
 {
-    public class IdentityUserService : IIdentityUserService
+    public class RegistrationService : IRegistrationService
     {
         private readonly IUserManagerProvider _userManagerProvider;
-        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ISpecialityRepository _specialityRepository;
 
-        public IdentityUserService(IUserManagerProvider userManagerProvider, SignInManager<IdentityUser> signInManager, ISpecialityRepository specialityRepository)
+        public RegistrationService(IUserManagerProvider userManagerProvider, ISpecialityRepository specialityRepository)
         {
             _userManagerProvider = userManagerProvider;
-            _signInManager = signInManager;
             _specialityRepository = specialityRepository;
         }
 
@@ -61,11 +57,5 @@ namespace ClinicApp.Services.User
 
             return RegistrationResult.Succeeded;
         }
-
-        public async Task<SignInResult> SignIn(string userName, string password) 
-            => await _signInManager.PasswordSignInAsync(userName, password, false, false);
-
-        public async Task SignOut() => await _signInManager.SignOutAsync();
-        public bool IsSignedIn(ClaimsPrincipal user) => _signInManager.IsSignedIn(user);
     }
 }

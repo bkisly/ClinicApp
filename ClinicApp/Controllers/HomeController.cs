@@ -7,13 +7,6 @@ namespace ClinicApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IIdentityUserService _identityUserService;
-
-        public HomeController(IIdentityUserService identityUserService)
-        {
-            _identityUserService = identityUserService;
-        }
-
         public IActionResult Index()
         {
             string? role = null;
