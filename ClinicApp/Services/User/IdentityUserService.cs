@@ -18,41 +18,47 @@ namespace ClinicApp.Services.User
             _specialityRepository = specialityRepository;
         }
 
-        public async Task RegisterDoctor(string userName, string password, byte specialityId)
+        public async Task<RegistrationResult> RegisterDoctor(string userName, string password, byte specialityId)
         {
             var speciality = _specialityRepository.Specialities.Single(s => s.Id == specialityId);
             var doctor = new Doctor { UserName = userName, Speciality = speciality };
             var mgr = _userManagerProvider.Provide(doctor);
 
             if (await mgr.FindByNameAsync(userName) != null)
-                return;
+                return RegistrationResult.UserExists;
 
             await mgr.CreateAsync(doctor, password);
             await mgr.AddToRoleAsync(doctor, Constants.Roles.DoctorRoleName);
+
+            return RegistrationResult.Succeeded;
         }
 
-        public async Task RegisterPatient(string userName, string password)
+        public async Task<RegistrationResult> RegisterPatient(string userName, string password)
         {
             var patient = new Patient { UserName = userName };
             var mgr = _userManagerProvider.Provide(patient);
 
             if (await mgr.FindByNameAsync(userName) != null)
-                return;
+                return RegistrationResult.UserExists;
 
             await mgr.CreateAsync(patient, password);
             await mgr.AddToRoleAsync(patient, Constants.Roles.PatientRoleName);
+
+            return RegistrationResult.Succeeded;
         }
 
-        public async Task RegisterManager(string userName, string password)
+        public async Task<RegistrationResult> RegisterManager(string userName, string password)
         {
             var manager = new Manager { UserName = userName };
             var mgr = _userManagerProvider.Provide(manager);
 
             if (await mgr.FindByNameAsync(userName) != null)
-                return;
+                return RegistrationResult.UserExists;
 
             await mgr.CreateAsync(manager, password);
             await mgr.AddToRoleAsync(manager, Constants.Roles.ManagerRoleName);
+
+            return RegistrationResult.Succeeded;
         }
 
         public async Task SignIn(string userName, string password)
