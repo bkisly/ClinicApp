@@ -1,5 +1,6 @@
-﻿@{
+﻿@model string?
+@{
     ViewData["Title"] = "Home page";
 }
 
-<p>Hello world! (from index page)</p>
+<p>@(Model != null ? $"User logged in as a {Model}" : "User not logged in")</p>

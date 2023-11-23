@@ -1,4 +1,5 @@
-﻿using ClinicApp.Infrastructure;
+﻿using System.Security.Claims;
+using ClinicApp.Infrastructure;
 using ClinicApp.Models.Users;
 using ClinicApp.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -61,21 +62,10 @@ namespace ClinicApp.Services.User
             return RegistrationResult.Succeeded;
         }
 
-        public async Task<SignInResult> SignIn(string userName, string password)
-        {
-            var mgr = _userManagerProvider.DefaultManager;
-            var user = await mgr.FindByNameAsync(userName);
-            var valid = user != null && await mgr.CheckPasswordAsync(user, password);
+        public async Task<SignInResult> SignIn(string userName, string password) 
+            => await _signInManager.PasswordSignInAsync(userName, password, false, false);
 
-            if (!valid)
-                throw new ArgumentException("Invalid credentials.");
-
-            return await _signInManager.PasswordSignInAsync(userName, password, false, false);
-        }
-
-        public async Task SignOut()
-        {
-            await _signInManager.SignOutAsync();
-        }
+        public async Task SignOut() => await _signInManager.SignOutAsync();
+        public bool IsSignedIn(ClaimsPrincipal user) => _signInManager.IsSignedIn(user);
     }
 }
