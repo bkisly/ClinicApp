@@ -61,7 +61,7 @@ namespace ClinicApp.Services.User
             return RegistrationResult.Succeeded;
         }
 
-        public async Task SignIn(string userName, string password)
+        public async Task<SignInResult> SignIn(string userName, string password)
         {
             var mgr = _userManagerProvider.DefaultManager;
             var user = await mgr.FindByNameAsync(userName);
@@ -70,10 +70,10 @@ namespace ClinicApp.Services.User
             if (!valid)
                 throw new ArgumentException("Invalid credentials.");
 
-            await _signInManager.SignInAsync(user!, true);
+            return await _signInManager.PasswordSignInAsync(userName, password, false, false);
         }
 
-        public async Task SignOut(IdentityUser user)
+        public async Task SignOut()
         {
             await _signInManager.SignOutAsync();
         }
