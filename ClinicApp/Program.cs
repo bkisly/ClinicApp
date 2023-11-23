@@ -45,6 +45,10 @@ configurationBuilder.BuildManagerCredentials();
 
 var app = builder.Build();
 
+app.MapAreaControllerRoute(
+    name: "ManageArea",
+    areaName: Constants.Areas.ManageAreaName,
+    pattern: Constants.Areas.ManageAreaName + "/{controller=Home}/{action=Index}/{id?}");
 app.MapDefaultControllerRoute();
 
 using (var scope = app.Services.CreateScope())

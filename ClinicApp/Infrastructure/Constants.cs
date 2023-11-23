@@ -8,5 +8,10 @@
             public const string DoctorRoleName = "Doctor";
             public const string PatientRoleName = "Patient";
         }
+
+        public static class Areas
+        {
+            public const string ManageAreaName = "Manage";
+        }
     }
 }
