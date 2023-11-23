@@ -4,7 +4,7 @@ using Moq;
 
 namespace ClinicApp.Tests
 {
-    public class DataInitializerTests
+    public class DataFactoryTests
     {
         [Fact]
         public void CanAddSpecialitiesToEmptyCollection()
@@ -16,12 +16,12 @@ namespace ClinicApp.Tests
 
             // Act
 
-            DataInitializer.PopulateSpecialities(mock.Object);
+            DataFactory.PopulateSpecialities(mock.Object);
 
             // Assert
 
-            Assert.Equivalent(DataInitializer.GetSpecialities(), specialities);
-            mock.Verify(repository => repository.AddSpeciality(It.IsAny<Speciality>()), Times.Exactly(DataInitializer.GetSpecialities().Count()));
+            Assert.Equivalent(DataFactory.GetSpecialities(), specialities);
+            mock.Verify(repository => repository.AddSpeciality(It.IsAny<Speciality>()), Times.Exactly(DataFactory.GetSpecialities().Count()));
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace ClinicApp.Tests
 
             // Act
 
-            DataInitializer.PopulateSpecialities(mock.Object);
+            DataFactory.PopulateSpecialities(mock.Object);
 
             // Assert
 

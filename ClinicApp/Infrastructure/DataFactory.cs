@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ClinicApp.Infrastructure
 {
-    public static class DataInitializer
+    public static class DataFactory
     {
         public static void PopulateSpecialities(ISpecialityRepository specialityRepository)
         {

@@ -1,5 +1,6 @@
 using ClinicApp.Data;
 using ClinicApp.Infrastructure;
+using ClinicApp.Infrastructure.Configuration;
 using ClinicApp.Models.Users;
 using ClinicApp.Repositories;
 using ClinicApp.Services.User;
@@ -35,14 +36,11 @@ builder.Services.AddScoped<ISpecialityRepository, SpecialityDbRepository>();
 
 // Add infrastructural services
 builder.Services.AddScoped<IUserManagerProvider, UserManagerProvider>();
+builder.Services.AddScoped<IClinicConfigurationBuilder, ClinicConfigurationBuilder>();
 
 // Add services
 builder.Services.AddScoped<IIdentityAuthenticationService, IdentityAuthenticationService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
-
-// Invoke configuration builder
-var configurationBuilder = new ClinicConfigurationBuilder(builder.Configuration);
-configurationBuilder.BuildManagerCredentials();
 
 var app = builder.Build();
 
@@ -58,16 +56,20 @@ using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
     var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+    var config = serviceProvider.GetRequiredService<IClinicConfigurationBuilder>()
+        .BuildManagerCredentials()
+        .Build();
+
 
     if(context.Database.GetPendingMigrations().Any())
         context.Database.Migrate();
 
-    DataInitializer.PopulateSpecialities(serviceProvider.GetRequiredService<ISpecialityRepository>());
+    DataFactory.PopulateSpecialities(serviceProvider.GetRequiredService<ISpecialityRepository>());
 
-    await DataInitializer.EnsureRoles(serviceProvider.GetRequiredService<RoleManager<IdentityRole>>());
-    await DataInitializer.CreateManagerAccount(
-        serviceProvider.GetRequiredService<IRegistrationService>(), configurationBuilder.ManagerUserName,
-        configurationBuilder.ManagerPassword);
+    await DataFactory.EnsureRoles(serviceProvider.GetRequiredService<RoleManager<IdentityRole>>());
+    await DataFactory.CreateManagerAccount(
+        serviceProvider.GetRequiredService<IRegistrationService>(), config.ManagerUserName,
+        config.ManagerPassword);
 }
 
 app.Run();

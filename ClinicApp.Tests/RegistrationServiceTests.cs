@@ -14,7 +14,7 @@ namespace ClinicApp.Tests
             // Arrange
 
             var doctors = new List<Doctor>();
-            var specialities = new List<Speciality>(DataInitializer.GetSpecialities());
+            var specialities = new List<Speciality>(DataFactory.GetSpecialities());
             var providerMock = Helpers.GetUserManagerProviderMock(doctors);
             var repositoryMock = Helpers.GetSpecialityRepositoryMock(specialities);
             var service = new RegistrationService(providerMock.Object, repositoryMock.Object);
@@ -114,7 +114,7 @@ namespace ClinicApp.Tests
             // Arrange
 
             var doctors = new List<Doctor> { new() { UserName = "doctor1" } };
-            var specialities = new List<Speciality>(DataInitializer.GetSpecialities());
+            var specialities = new List<Speciality>(DataFactory.GetSpecialities());
             var repositoryMock = Helpers.GetSpecialityRepositoryMock(specialities);
             var providerMock = Helpers.GetUserManagerProviderMock(doctors);
             var service = new RegistrationService(providerMock.Object, repositoryMock.Object);
