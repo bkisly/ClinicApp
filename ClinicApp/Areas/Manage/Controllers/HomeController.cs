@@ -8,7 +8,7 @@ namespace ClinicApp.Areas.Manage.Controllers
     {
         public IActionResult Index()
         {
-            return Ok("Hello world! (from area index action)");
+            return View();
         }
     }
 }

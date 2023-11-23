@@ -45,6 +45,8 @@ configurationBuilder.BuildManagerCredentials();
 
 var app = builder.Build();
 
+app.UseStaticFiles();
+
 app.MapAreaControllerRoute(
     name: "ManageArea",
     areaName: Constants.Areas.ManageAreaName,

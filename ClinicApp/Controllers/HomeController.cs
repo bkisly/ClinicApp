@@ -15,7 +15,7 @@ namespace ClinicApp.Controllers
 
         public IActionResult Index()
         {
-            return Ok("Hello world! (from controller)");
+            return View();
         }
 
         public IActionResult Login()

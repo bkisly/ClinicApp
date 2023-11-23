@@ -18,8 +18,4 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.14" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Manage\Views\" />
-  </ItemGroup>
-
 </Project>
