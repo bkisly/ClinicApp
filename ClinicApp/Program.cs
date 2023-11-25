@@ -31,6 +31,15 @@ builder.Services.AddIdentityCore<Patient>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/User/Login";
+    options.LogoutPath = "/User/Logout";
+});
+
 // Add repositories
 builder.Services.AddScoped<ISpecialityRepository, SpecialityDbRepository>();
 
@@ -45,6 +54,9 @@ builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 var app = builder.Build();
 
 app.UseStaticFiles();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapAreaControllerRoute(
     name: "ManageArea",

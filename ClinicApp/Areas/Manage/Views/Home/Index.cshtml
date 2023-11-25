@@ -1,6 +1,24 @@
 ﻿@{
-    Layout = "_Layout";
     ViewData["Title"] = "Manage";
 }
 
-<p>Hello world! (from management page)</p>
+<div class="container py-4">
+    
+    <div class="text-center mb-5">
+        <h1 class="display-4">Clinic management center</h1>
+        <p>Use this section to manage information regarding the clinic.</p>
+    </div>
+
+    <div class="card my-2">
+        <div class="card-body">
+            <a asp-action="Index" asp-controller="Doctors" asp-area="Manage" class="h4">Doctors</a>
+            <p class="mt-2">Allows to register new doctors, edit their schedules and generate reports.</p>
+        </div>
+    </div>
+    <div class="card my-2">
+        <div class="card-body">
+            <a asp-action="Index" asp-controller="Patients" asp-area="Manage" class="h4">Patients</a>
+            <p class="mt-2">View registered patients and activate their accounts.</p>
+        </div>
+    </div>
+</div>

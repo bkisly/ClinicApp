@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ClinicApp.Models.Users.Doctor>
+@{
+    ViewData["Title"] = "Doctors";
+}
+
+<div class="container py-3 text-center">
+    <div class="mb-3">
+        <h1 class="display-4 mb-3">Doctors</h1>
+        <a asp-area="Manage" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary rounded-pill">Back</a>
+        <a asp-area="Manage" asp-controller="Doctors" asp-action="Register" class="btn btn-outline-primary rounded-pill">Register a doctor</a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <table class="table-borderless table-hover table-striped">
+            <thead>
+            <tr>
+                <th>User name</th>
+                <th>Specialty</th>
+                <th>Edit schedule</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var doctor in Model)
+            {
+                <tr>
+                    <td>@doctor.UserName</td>
+                    <td>@doctor.Speciality.Name</td>
+                    <td>
+                        <a asp-area="Manage" asp-controller="Doctors" asp-action="Schedule" class="btn btn-outline-secondary rounded-pill">Edit schedule</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="h4 text-muted">There aren't any registered doctors.</p>
+    }
+</div>
