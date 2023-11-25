@@ -1,6 +1,5 @@
 ﻿using ClinicApp.Models;
 using ClinicApp.Models.Users;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
