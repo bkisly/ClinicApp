@@ -1,10 +1,12 @@
 ﻿using ClinicApp.Areas.Manage.ViewModels;
 using ClinicApp.Infrastructure;
+using ClinicApp.Models;
 using ClinicApp.Models.Users;
 using ClinicApp.Repositories;
 using ClinicApp.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClinicApp.Areas.Manage.Controllers
 {
@@ -15,6 +17,8 @@ namespace ClinicApp.Areas.Manage.Controllers
         private readonly IUserManagerProvider _userManagerProvider;
         private readonly ISpecialityRepository _specialityRepository;
 
+        private DoctorRegistrationViewModel DefaultViewModel => new() { Specialities = _specialityRepository.Specialities.ToList() };
+
         public DoctorsController(IRegistrationService registrationService, IUserManagerProvider userManagerProvider, ISpecialityRepository specialityRepository)
         {
             _registrationService = registrationService;
@@ -24,12 +28,32 @@ namespace ClinicApp.Areas.Manage.Controllers
 
         public IActionResult Index()
         {
-            return View(_userManagerProvider.Provide(new Doctor()).Users.ToList());
+            return View(_userManagerProvider.Provide(new Doctor()).Users.Include(d => d.Speciality).ToList());
         }
 
         public IActionResult Register()
         {
-            return View(new DoctorRegistrationViewModel { Specialities = _specialityRepository.Specialities.ToList() });
+            return View(DefaultViewModel);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(DoctorRegistrationViewModel viewModel)
+        {
+            if (!ModelState.IsValid) return View(DefaultViewModel);
+
+            if (viewModel.Password != viewModel.ConfirmPassword)
+            {
+                ModelState.AddModelError("", "Passwords do not match.");
+                return View(DefaultViewModel);
+            }
+
+            if (await _registrationService.RegisterDoctor(viewModel.UserName, viewModel.Password,
+                    viewModel.SpecialityId) == RegistrationResult.Succeeded) 
+                return RedirectToAction(nameof(Index));
+
+            ModelState.AddModelError("UserName", "User with the specified name already exists.");
+            return View(DefaultViewModel);
+
         }
     }
 }

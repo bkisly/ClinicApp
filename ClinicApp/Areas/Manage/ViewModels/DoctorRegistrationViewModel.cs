@@ -5,7 +5,7 @@ namespace ClinicApp.Areas.Manage.ViewModels
 {
     public class DoctorRegistrationViewModel
     {
-        [BindNever] public IEnumerable<Speciality> Specialities { get; set; } = null!;
+        public IEnumerable<Speciality>? Specialities { get; set; }
 
         public string UserName { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
