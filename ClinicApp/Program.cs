@@ -50,6 +50,7 @@ builder.Services.AddScoped<IClinicConfigurationBuilder, ClinicConfigurationBuild
 // Add services
 builder.Services.AddScoped<IIdentityAuthenticationService, IdentityAuthenticationService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
@@ -71,7 +72,6 @@ using (var scope = app.Services.CreateScope())
     var config = serviceProvider.GetRequiredService<IClinicConfigurationBuilder>()
         .BuildManagerCredentials()
         .Build();
-
 
     if(context.Database.GetPendingMigrations().Any())
         context.Database.Migrate();

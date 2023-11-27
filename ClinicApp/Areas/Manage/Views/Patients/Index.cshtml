@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ClinicApp.Models.Users.Patient>
+﻿@model ClinicApp.Areas.Manage.ViewModels.PatientsViewModel
 @{
     ViewData["Title"] = "Patients";
 }
@@ -9,9 +9,9 @@
         <a asp-area="Manage" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary rounded-pill">Back</a>
     </div>
 
-    @if (Model.Any())
+    @if (Model.Patients.Any())
     {
-        <table class="table-borderless table-hover table-striped">
+        <table class="table table-borderless table-hover table-striped text-start">
             <thead>
                 <tr>
                     <th>User name</th>
@@ -20,13 +20,16 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var patient in Model)
+                @foreach (var patient in Model.Patients)
                 {
                     <tr>
                         <td>@patient.UserName</td>
-                        <td></td>
+                        <td>@(patient.IsActivated ? "Yes" : "No")</td>
                         <td>
-                            <a asp-area="Manage" asp-controller="Patients" asp-action="Activate" class="btn btn-outline-success rounded-pill">Activate account</a>
+                            <form asp-action="Activate" method="post">
+                                <input asp-for="SelectedPatientId" type="hidden" value="@patient.Id"/>
+                                <button type="submit" class="btn btn-outline-success rounded-pill">Activate account</button>
+                            </form>
                         </td>
                     </tr>
                 }

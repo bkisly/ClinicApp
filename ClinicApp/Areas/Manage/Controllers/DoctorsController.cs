@@ -1,6 +1,5 @@
 ﻿using ClinicApp.Areas.Manage.ViewModels;
 using ClinicApp.Infrastructure;
-using ClinicApp.Models;
 using ClinicApp.Models.Users;
 using ClinicApp.Repositories;
 using ClinicApp.Services.User;
