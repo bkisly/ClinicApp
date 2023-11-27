@@ -4,7 +4,7 @@ using ClinicApp.Models.ValidationAttributes;
 
 namespace ClinicApp.Models
 {
-    public class ScheduleEntry
+    public class ScheduleEntry : ICopyable<ScheduleEntry>
     {
         public int Id { get; set; }
         public DateOnly Date { get; set; }
@@ -12,5 +12,13 @@ namespace ClinicApp.Models
         [MinutesDividibleBy(Constants.VisitDurationMinutes), EndLaterThanBegin] public TimeOnly End { get; set; }
 
         public Doctor Doctor { get; set; } = null!;
+
+        public void CopyTo(ScheduleEntry obj)
+        {
+            obj.Date = Date;
+            obj.Begin = Begin;
+            obj.End = End;
+            obj.Doctor = Doctor;
+        }
     }
 }
