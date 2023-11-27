@@ -2,6 +2,8 @@
 {
     public static class Constants
     {
+        public const int VisitDurationMinutes = 15;
+
         public static class Roles
         {
             public const string ManagerRoleName = "Manager";
