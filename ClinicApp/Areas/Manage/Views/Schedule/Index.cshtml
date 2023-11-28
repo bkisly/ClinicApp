@@ -1,0 +1,63 @@
+﻿@using ClinicApp.Infrastructure
+@model ClinicApp.Areas.Manage.ViewModels.ScheduleEntriesViewModel
+@{
+    ViewData["Title"] = "View schedule";
+}
+
+<div class="container py-3 text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    
+    <div class="hstack justify-content-center mb-3">
+        <a asp-area="Manage" asp-controller="Doctors" asp-action="Index" class="btn btn-outline-secondary rounded-pill me-2">Back</a>
+    
+        <form asp-action="CopyPreviousWeek" method="post">
+            <input type="hidden" asp-for="DoctorId" value="@Model.DoctorId"/>
+            <input type="hidden" asp-for="WeekNumber" value="@Model.WeekNumber"/>
+            <button class="btn btn-outline-primary rounded-pill">Copy previous week</button>
+        </form>
+    </div>
+
+    
+    <div class="py-3 border rounded mb-3 bg-light">
+        <a asp-area="Manage" asp-controller="Schedule" asp-action="Index" 
+           asp-route-weekNumber="@(Model.WeekNumber - 1)" asp-route-id="@Model.DoctorId"
+           class="btn btn-sm btn-outline-primary rounded-pill">Previous week</a>
+        
+        <span class="fw-semibold my-auto">@DateOnlyExtensions.GetDatesForWeek(Model.WeekNumber).First() - @DateOnlyExtensions.GetDatesForWeek(Model.WeekNumber).Last()</span>
+        
+        <a asp-area="Manage" asp-controller="Schedule" asp-action="Index"
+           asp-route-weekNumber="@(Model.WeekNumber + 1)" asp-route-id="@Model.DoctorId"
+           class="btn btn-sm btn-outline-primary rounded-pill">Next week</a>
+    </div>
+    
+    @if (Model.ScheduleEntries.Any())
+    {
+        <table class="table table-borderless table-hover table-striped text-start">
+            <thead>
+            <tr>
+                <td>Date</td>
+                <td>Begin time</td>
+                <td>End time</td>
+                <td>Edit</td>
+                <td>Delete</td>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var entry in Model.ScheduleEntries)
+            {
+                <tr>
+                    <td>@entry.Date.ToLongDateString()</td>
+                    <td>@entry.Begin.ToShortTimeString()</td>
+                    <td>@entry.End.ToShortTimeString()</td>
+                    <td><a class="btn btn-outline-primary rounded-pill">Edit</a></td>
+                    <td><a class="btn btn-outline-danger rounded-pill">Delete</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="h4 text-muted">There aren't any schedule entries for the selected range.</p>
+    }
+</div>

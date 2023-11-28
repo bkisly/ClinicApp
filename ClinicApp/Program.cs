@@ -3,6 +3,7 @@ using ClinicApp.Infrastructure;
 using ClinicApp.Infrastructure.Configuration;
 using ClinicApp.Models.Users;
 using ClinicApp.Repositories;
+using ClinicApp.Services.Schedule;
 using ClinicApp.Services.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,7 @@ builder.Services.AddScoped<IClinicConfigurationBuilder, ClinicConfigurationBuild
 builder.Services.AddScoped<IIdentityAuthenticationService, IdentityAuthenticationService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IScheduleService,  ScheduleService>();
 
 var app = builder.Build();
 

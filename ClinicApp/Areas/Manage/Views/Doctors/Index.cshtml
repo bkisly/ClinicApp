@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ClinicApp.Models.Users.Doctor>
+﻿@using ClinicApp.Infrastructure
+@model IEnumerable<ClinicApp.Models.Users.Doctor>
 @{
     ViewData["Title"] = "Doctors";
 }
@@ -27,7 +28,9 @@
                     <td>@doctor.UserName</td>
                     <td>@doctor.Speciality.Name</td>
                     <td>
-                        <a asp-area="Manage" asp-controller="Doctors" asp-action="Schedule" class="btn btn-outline-secondary rounded-pill">Edit schedule</a>
+                        <a asp-area="Manage" asp-controller="Schedule" asp-action="Index" 
+                           asp-route-weekNumber="@DateOnly.FromDateTime(DateTime.Now).WeekNumber()" asp-route-id="@doctor.Id"
+                           class="btn btn-outline-secondary rounded-pill">View schedule</a>
                     </td>
                 </tr>
             }

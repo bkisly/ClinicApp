@@ -7,15 +7,19 @@ namespace ClinicApp.Services.Schedule
 {
     public class ScheduleService(IScheduleEntryRepository repository) : IScheduleService
     {
-        public IEnumerable<ScheduleEntry> GetEntriesByWeek(int week)
-            => repository.ScheduleEntries
-                .Include(entry => entry.Doctor)
-                .Where(entry => entry.Date.WeekNumber() == week)
-                .ToArray();
-
-        public async Task CopyPreviousWeek(int previousWeek)
+        public IEnumerable<ScheduleEntry> GetEntriesByWeek(int week, string doctorId)
         {
-            var entries = GetEntriesByWeek(previousWeek);
+            var possibleDates = DateOnlyExtensions.GetDatesForWeek(week);
+
+            return repository.ScheduleEntries
+                .Include(entry => entry.Doctor)
+                .Where(entry => possibleDates.Contains(entry.Date) && entry.Doctor.Id == doctorId)
+                .ToArray();
+        }
+
+        public async Task CopyPreviousWeek(int previousWeek, string doctorId)
+        {
+            var entries = GetEntriesByWeek(previousWeek, doctorId);
 
             foreach (var entry in entries)
             {
@@ -24,5 +28,14 @@ namespace ClinicApp.Services.Schedule
                 await repository.AddAsync(newEntry);
             }
         }
+
+        public async Task<ScheduleEntry> GetByIdAsync(int id) => await repository.GetByIdAsync(id);
+
+        public async Task AddAsync(ScheduleEntry scheduleEntry) => await repository.AddAsync(scheduleEntry);
+
+        public async Task UpdateAsync(int id, ScheduleEntry scheduleEntry) 
+            => await repository.UpdateAsync(id, scheduleEntry);
+
+        public async Task DeleteAsync(int id) => await repository.DeleteAsync(id);
     }
 }
