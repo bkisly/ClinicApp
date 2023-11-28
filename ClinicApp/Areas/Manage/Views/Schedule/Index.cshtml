@@ -9,6 +9,7 @@
     
     <div class="hstack justify-content-center mb-3">
         <a asp-area="Manage" asp-controller="Doctors" asp-action="Index" class="btn btn-outline-secondary rounded-pill me-2">Back</a>
+        <a asp-area="Manage" asp-controller="Schedule" asp-action="New" asp-route-doctorid="@Model.DoctorId" class="btn btn-outline-success rounded-pill me-2">New entry</a>
     
         <form asp-action="CopyPreviousWeek" method="post">
             <input type="hidden" asp-for="DoctorId" value="@Model.DoctorId"/>
@@ -49,7 +50,7 @@
                     <td>@entry.Date.ToLongDateString()</td>
                     <td>@entry.Begin.ToShortTimeString()</td>
                     <td>@entry.End.ToShortTimeString()</td>
-                    <td><a class="btn btn-outline-primary rounded-pill">Edit</a></td>
+                    <td><a class="btn btn-outline-primary rounded-pill" asp-controller="Schedule" asp-action="Edit" asp-route-id="@entry.Id">Edit</a></td>
                     <td><a class="btn btn-outline-danger rounded-pill">Delete</a></td>
                 </tr>
             }

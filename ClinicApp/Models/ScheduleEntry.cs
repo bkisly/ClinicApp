@@ -1,6 +1,7 @@
 ﻿using ClinicApp.Infrastructure;
 using ClinicApp.Models.Users;
 using ClinicApp.Models.ValidationAttributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace ClinicApp.Models
 {
@@ -11,7 +12,8 @@ namespace ClinicApp.Models
         [MinutesDividibleBy(Constants.VisitDurationMinutes)] public TimeOnly Begin { get; set; }
         [MinutesDividibleBy(Constants.VisitDurationMinutes), EndLaterThanBegin] public TimeOnly End { get; set; }
 
-        public Doctor Doctor { get; set; } = null!;
+        public string DoctorId { get; set; } = null!;
+        [ValidateNever] public Doctor Doctor { get; set; } = null!;
 
         public void CopyTo(ScheduleEntry obj)
         {

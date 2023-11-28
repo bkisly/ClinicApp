@@ -1,0 +1,33 @@
+﻿@using ClinicApp.Infrastructure
+@model ScheduleEntry
+@{
+    ViewData["Title"] = Model.Id == 0 ? "New schedule entry" : "Edit schedule entry";
+}
+
+<div class="container py-3 text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <a asp-action="Index" asp-route-id="@Model.DoctorId" 
+       asp-route-weeknumber="@DateOnly.FromDateTime(DateTime.Now).WeekNumber()" class="btn btn-outline-secondary rounded-pill my-2">Back</a>
+    
+    <form asp-action="SaveEntry" method="post" class="text-start mt-3">
+        <input asp-for="Id" type="hidden"/>
+        <input asp-for="DoctorId" type="hidden"/>
+
+        <div asp-validation-summary="All" class="text-start text-danger"></div>
+
+        <div class="my-2">
+            <label asp-for="Date" class="form-label">Date</label>
+            <input asp-for="Date" class="form-control" type="date" />
+        </div>
+        <div class="my-2">
+            <label asp-for="Begin" class="form-label">Begin time</label>
+            <input asp-for="Begin" class="form-control" type="time"/>
+        </div>
+        <div class="my-2">
+            <label asp-for="End" class="form-label">End time</label>
+            <input asp-for="End" class="form-control" type="time"/>
+        </div>
+        
+        <button class="btn btn-outline-primary rounded-pill btn-lg" type="submit">Submit</button>
+    </form>
+</div>

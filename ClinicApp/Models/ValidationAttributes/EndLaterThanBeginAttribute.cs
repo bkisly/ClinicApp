@@ -9,7 +9,7 @@ namespace ClinicApp.Models.ValidationAttributes
             var scheduleEntry = (ScheduleEntry)validationContext.ObjectInstance;
 
             if (scheduleEntry.End <= scheduleEntry.Begin)
-                return new ValidationResult("End time must be earlier than begin time.",
+                return new ValidationResult("End time must be later than begin time.",
                     new[] { nameof(scheduleEntry.End) });
 
             return ValidationResult.Success;

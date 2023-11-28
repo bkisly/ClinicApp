@@ -37,6 +37,7 @@ namespace ClinicApp.Data.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("DoctorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<TimeOnly>("End")
@@ -308,7 +309,9 @@ namespace ClinicApp.Data.Migrations
                 {
                     b.HasOne("ClinicApp.Models.Users.Doctor", "Doctor")
                         .WithMany()
-                        .HasForeignKey("DoctorId");
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Doctor");
                 });
