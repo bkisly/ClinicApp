@@ -25,17 +25,44 @@ namespace ClinicApp.Services.Schedule
             {
                 var newEntry = (ScheduleEntry)entry.Clone();
                 newEntry.Date = newEntry.Date.AddDays(7);
-                await repository.AddAsync(newEntry);
+
+                try
+                {
+                    await AddAsync(newEntry);
+                }
+                catch (ArgumentException)
+                {
+                    continue;
+                }
             }
         }
 
         public async Task<ScheduleEntry> GetByIdAsync(int id) => await repository.GetByIdAsync(id);
 
-        public async Task AddAsync(ScheduleEntry scheduleEntry) => await repository.AddAsync(scheduleEntry);
+        public async Task AddAsync(ScheduleEntry scheduleEntry)
+        {
+            ValidateEntry(scheduleEntry);
+            await repository.AddAsync(scheduleEntry);
+        }
 
-        public async Task UpdateAsync(int id, ScheduleEntry scheduleEntry) 
-            => await repository.UpdateAsync(id, scheduleEntry);
+        public async Task UpdateAsync(int id, ScheduleEntry scheduleEntry)
+        {
+            ValidateEntry(scheduleEntry);
+            await repository.UpdateAsync(id, scheduleEntry);
+        }
 
         public async Task DeleteAsync(int id) => await repository.DeleteAsync(id);
+
+        private void ValidateEntry(ScheduleEntry scheduleEntry)
+        {
+            var collidingEntries = repository.ScheduleEntries
+                .Where(entry => entry.Date == scheduleEntry.Date && entry.DoctorId == scheduleEntry.DoctorId
+                                                                 && (scheduleEntry.Begin.IsBetween(entry.Begin, entry.End) ||
+                                                                     scheduleEntry.End.IsBetween(entry.Begin, entry.End)))
+                .ToArray();
+
+            if (collidingEntries.Length != 0)
+                throw new ArgumentException("An entry within the specified time range already exists.");
+        }
     }
 }

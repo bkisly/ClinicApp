@@ -53,9 +53,17 @@ namespace ClinicApp.Areas.Manage.Controllers
         {
             if (!ModelState.IsValid) return View("ScheduleEntryForm", entry);
 
-            if (entry.Id == 0)
-                await scheduleService.AddAsync(entry);
-            else await scheduleService.UpdateAsync(entry.Id, entry);
+            try
+            {
+                if (entry.Id == 0)
+                    await scheduleService.AddAsync(entry);
+                else await scheduleService.UpdateAsync(entry.Id, entry);
+            }
+            catch (ArgumentException e)
+            {
+                ModelState.AddModelError("", e.Message);
+                return View("ScheduleEntryForm", entry);
+            }
 
             return RedirectToAction(nameof(Index), new { id = entry.DoctorId, weekNumber = entry.Date.WeekNumber() });
 

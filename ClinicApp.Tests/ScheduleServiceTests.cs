@@ -12,27 +12,28 @@ namespace ClinicApp.Tests
         {
             // Arrange
 
+            var doctor = new Doctor { Id = "abc" };
             var entries = new List<ScheduleEntry>
             {
                 new()
                 {
                     Begin = new TimeOnly(12, 30), End = new TimeOnly(14, 30), Date = new DateOnly(2023, 11, 27),
-                    Doctor = new Doctor()
+                    Doctor = doctor
                 },
                 new()
                 {
                     Begin = new TimeOnly(12, 30), End = new TimeOnly(14, 30), Date = new DateOnly(2023, 11, 28),
-                    Doctor = new Doctor()
+                    Doctor = doctor
                 },
                 new()
                 {
                     Begin = new TimeOnly(12, 30), End = new TimeOnly(14, 30), Date = new DateOnly(2023, 11, 26),
-                    Doctor = new Doctor()
+                    Doctor = doctor
                 },
                 new()
                 {
                     Begin = new TimeOnly(12, 30), End = new TimeOnly(14, 30), Date = new DateOnly(2023, 11, 25),
-                    Doctor = new Doctor()
+                    Doctor = doctor
                 },
             };
 
@@ -42,7 +43,7 @@ namespace ClinicApp.Tests
 
             // Act
 
-            var filteredEntries = service.GetEntriesByWeek(weekNumber).ToArray();
+            var filteredEntries = service.GetEntriesByWeek(weekNumber, doctor.Id).ToArray();
 
             // Assert
 
@@ -55,17 +56,18 @@ namespace ClinicApp.Tests
         {
             // Arrange
 
+            var doctor = new Doctor { Id = "abc" };
             var entries = new List<ScheduleEntry>
             {
                 new()
                 {
                     Begin = new TimeOnly(12, 30), End = new TimeOnly(14, 30), Date = new DateOnly(2023, 11, 26),
-                    Doctor = new Doctor(), Id = 1
+                    Doctor = doctor, Id = 1
                 },
                 new()
                 {
                     Begin = new TimeOnly(12, 30), End = new TimeOnly(14, 30), Date = new DateOnly(2023, 11, 25),
-                    Doctor = new Doctor(), Id = 2
+                    Doctor = doctor, Id = 2
                 },
             };
 
@@ -75,7 +77,7 @@ namespace ClinicApp.Tests
 
             // Act
 
-            await service.CopyPreviousWeek(weekNumber);
+            await service.CopyPreviousWeek(weekNumber, doctor.Id);
 
             // Assert
 
