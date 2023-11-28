@@ -4,7 +4,7 @@ using ClinicApp.Models.ValidationAttributes;
 
 namespace ClinicApp.Models
 {
-    public class ScheduleEntry : ICopyable<ScheduleEntry>
+    public class ScheduleEntry : ICopyable<ScheduleEntry>, ICloneable
     {
         public int Id { get; set; }
         public DateOnly Date { get; set; }
@@ -19,6 +19,13 @@ namespace ClinicApp.Models
             obj.Begin = Begin;
             obj.End = End;
             obj.Doctor = Doctor;
+        }
+
+        public object Clone()
+        {
+            var newEntry = new ScheduleEntry();
+            CopyTo(newEntry);
+            return newEntry;
         }
     }
 }

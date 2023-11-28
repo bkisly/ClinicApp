@@ -28,6 +28,17 @@ namespace ClinicApp.Tests
             return mock;
         }
 
+        public static Mock<IScheduleEntryRepository> GetScheduleEntryRepositoryMock(IList<ScheduleEntry> entries)
+        {
+            var mock = new Mock<IScheduleEntryRepository>();
+
+            mock.SetupGet(repository => repository.ScheduleEntries).Returns(entries.AsQueryable());
+            mock.Setup(repository => repository.AddAsync(It.IsAny<ScheduleEntry>()))
+                .Callback((ScheduleEntry s) => entries.Add(s));
+
+            return mock;
+        }
+
         public static Mock<UserManager<TUser>> GetUserManagerMock<TUser>(IList<TUser> users) where TUser : IdentityUser
         {
             var store = new Mock<IUserStore<TUser>>();
