@@ -120,7 +120,7 @@ namespace ClinicApp.Tests
                     End = new TimeOnly(14, 30),
                     Date = new DateOnly(2023, 11, 25),
                     Doctor = doctor,
-                    Id = 2
+                    Id = 3,
                 })
             );
         }
