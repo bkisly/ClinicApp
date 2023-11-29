@@ -3,4 +3,10 @@
     ViewData["Title"] = "Home page";
 }
 
-<p>@(Model != null ? $"User logged in as a {Model}" : "User not logged in")</p>
+<div class="container py-3 text-center">
+    <h1 class="display-3">Clinic App</h1>
+    <p>Patients are our priority</p>
+    
+    <p class="h4 mt-3">@(Model != null ? $"User logged in as a {Model}" : "User not logged in")</p>
+</div>
+

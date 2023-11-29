@@ -39,9 +39,13 @@
                     <div class="justify-content-end text-dark">
                         @if (UserService.IsSignedIn(User))
                         {
-                            <form asp-area="" asp-controller="User" asp-action="Logout" method="post">
-                                <button class="nav-link">Log out</button>
-                            </form>
+                            <div class="hstack">
+                                <span class="me-3">Logged in as: @User.Identity?.Name</span>
+                                <form asp-area="" asp-controller="User" asp-action="Logout" method="post">
+                                    <button class="nav-link">Log out</button>
+                                </form>
+                            </div>
+
                         }
                         else
                         {
