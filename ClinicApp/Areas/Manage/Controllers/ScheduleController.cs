@@ -10,36 +10,35 @@ using Microsoft.AspNetCore.Mvc;
 namespace ClinicApp.Areas.Manage.Controllers
 {
     [Area(Constants.Areas.ManageAreaName), Authorize(Roles = Constants.Roles.ManagerRoleName)]
-    public class ScheduleController : Controller
+    public class ScheduleController(IScheduleService scheduleService, UserManager<Doctor> doctorManager) : Controller
     {
-        private readonly IScheduleService _scheduleService;
-        private readonly UserManager<Doctor> _doctorManager;
-
-        public ScheduleController(IScheduleService scheduleService, UserManager<Doctor> doctorManager)
-        {
-            _scheduleService = scheduleService;
-            _doctorManager = doctorManager;
-        }
-
         public async Task<IActionResult> Index(string id, int weekNumber)
         {
-            if (string.IsNullOrEmpty(id) || await _doctorManager.FindByIdAsync(id) == null)
+            if (string.IsNullOrEmpty(id) || await doctorManager.FindByIdAsync(id) == null)
                 return NotFound();
 
-            var entries = _scheduleService.GetEntriesByWeek(weekNumber, id);
-            return View(new ScheduleEntriesViewModel { WeekNumber = weekNumber, ScheduleEntries = entries, DoctorId = id });
+            try
+            {
+                var entries = scheduleService.GetEntriesByWeek(weekNumber, id);
+                return View(new ScheduleEntriesViewModel { WeekNumber = weekNumber, ScheduleEntries = entries, DoctorId = id });
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return NotFound();
+            }
+
         }
 
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> CopyPreviousWeek(ScheduleEntriesViewModel model)
         {
-            await _scheduleService.CopyPreviousWeek(model.WeekNumber - 1, model.DoctorId);
+            await scheduleService.CopyPreviousWeek(model.WeekNumber - 1, model.DoctorId);
             return RedirectToAction(nameof(Index), new { id = model.DoctorId, weekNumber = model.WeekNumber });
         }
 
         public async Task<IActionResult> New(string doctorId)
         {
-            if (string.IsNullOrEmpty(doctorId) || await _doctorManager.FindByIdAsync(doctorId) == null)
+            if (string.IsNullOrEmpty(doctorId) || await doctorManager.FindByIdAsync(doctorId) == null)
                 return NotFound();
 
             return View("ScheduleEntryForm", new ScheduleEntry { DoctorId = doctorId, Date = DateOnly.FromDateTime(DateTime.Now) });
@@ -49,7 +48,7 @@ namespace ClinicApp.Areas.Manage.Controllers
         {
             try
             {
-                return View("ScheduleEntryForm", await _scheduleService.GetByIdAsync(id));
+                return View("ScheduleEntryForm", await scheduleService.GetByIdAsync(id));
             }
             catch (InvalidOperationException)
             {
@@ -65,8 +64,8 @@ namespace ClinicApp.Areas.Manage.Controllers
             try
             {
                 if (entry.Id == 0)
-                    await _scheduleService.AddAsync(entry);
-                else await _scheduleService.UpdateAsync(entry.Id, entry);
+                    await scheduleService.AddAsync(entry);
+                else await scheduleService.UpdateAsync(entry.Id, entry);
             }
             catch (ArgumentException e)
             {

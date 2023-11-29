@@ -47,11 +47,24 @@ namespace ClinicApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _registrationService.RegisterPatient(registrationViewModel.UserName, registrationViewModel.Password);
+                if (registrationViewModel.Password != registrationViewModel.ConfirmPassword)
+                {
+                    ModelState.AddModelError("", "Passwords do not match.");
+                    return View(registrationViewModel);
+                }
 
-                if (result == RegistrationResult.UserExists)
-                    ModelState.AddModelError("UserName", "A user with the specified name already exists.");
-                else return RedirectToAction(nameof(HomeController.Index), "Home");
+                try
+                {
+                    var result = await _registrationService.RegisterPatient(registrationViewModel.UserName, registrationViewModel.Password);
+
+                    if (result == RegistrationResult.UserExists)
+                        ModelState.AddModelError("UserName", "A user with the specified name already exists.");
+                    else return RedirectToAction(nameof(HomeController.Index), "Home");
+                }
+                catch (ArgumentException e)
+                {
+                    ModelState.AddModelError("Password", e.Message);
+                }
             }
 
             return View(registrationViewModel);

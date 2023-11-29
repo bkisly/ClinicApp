@@ -24,8 +24,16 @@ namespace ClinicApp.Services.User
             if (await mgr.FindByNameAsync(userName) != null)
                 return RegistrationResult.UserExists;
 
-            await mgr.CreateAsync(doctor, password);
-            await mgr.AddToRoleAsync(doctor, Constants.Roles.DoctorRoleName);
+            try
+            {
+                await mgr.CreateAsync(doctor, password);
+                await mgr.AddToRoleAsync(doctor, Constants.Roles.DoctorRoleName);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException(
+                    "Password is not valid. Requirements: min. 8 characters long, containing at least 1 small, 1 capital letter, 1 number and 1 symbol.");
+            }
 
             return RegistrationResult.Succeeded;
         }
@@ -38,8 +46,16 @@ namespace ClinicApp.Services.User
             if (await mgr.FindByNameAsync(userName) != null)
                 return RegistrationResult.UserExists;
 
-            await mgr.CreateAsync(patient, password);
-            await mgr.AddToRoleAsync(patient, Constants.Roles.PatientRoleName);
+            try
+            {
+                await mgr.CreateAsync(patient, password);
+                await mgr.AddToRoleAsync(patient, Constants.Roles.PatientRoleName);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException(
+                    "Password is not valid. Requirements: min. 8 characters long, containing at least 1 small, 1 capital letter, 1 number and 1 symbol.");
+            }
 
             return RegistrationResult.Succeeded;
         }
@@ -52,8 +68,16 @@ namespace ClinicApp.Services.User
             if (await mgr.FindByNameAsync(userName) != null)
                 return RegistrationResult.UserExists;
 
-            await mgr.CreateAsync(manager, password);
-            await mgr.AddToRoleAsync(manager, Constants.Roles.ManagerRoleName);
+            try
+            {
+                await mgr.CreateAsync(manager, password);
+                await mgr.AddToRoleAsync(manager, Constants.Roles.ManagerRoleName);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException(
+                    "Password is not valid. Requirements: min. 8 characters long, containing at least 1 small, 1 capital letter, 1 number and 1 symbol.");
+            }
 
             return RegistrationResult.Succeeded;
         }

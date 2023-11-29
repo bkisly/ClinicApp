@@ -46,11 +46,19 @@ namespace ClinicApp.Areas.Manage.Controllers
                 return View(DefaultViewModel);
             }
 
-            if (await _registrationService.RegisterDoctor(viewModel.UserName, viewModel.Password,
-                    viewModel.SpecialityId) == RegistrationResult.Succeeded) 
-                return RedirectToAction(nameof(Index));
+            try
+            {
+                if (await _registrationService.RegisterDoctor(viewModel.UserName, viewModel.Password,
+                        viewModel.SpecialityId) == RegistrationResult.Succeeded)
+                    return RedirectToAction(nameof(Index));
 
-            ModelState.AddModelError("UserName", "User with the specified name already exists.");
+                ModelState.AddModelError("UserName", "User with the specified name already exists.");
+            }
+            catch (ArgumentException e)
+            {
+                ModelState.AddModelError("Password", e.Message);
+            }
+
             return View(DefaultViewModel);
 
         }
