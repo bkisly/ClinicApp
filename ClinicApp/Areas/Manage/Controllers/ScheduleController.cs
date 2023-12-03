@@ -76,5 +76,19 @@ namespace ClinicApp.Areas.Manage.Controllers
             return RedirectToAction(nameof(Index), new { id = entry.DoctorId, weekNumber = entry.Date.WeekNumber() });
 
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteEntry(int id)
+        {
+            try
+            {
+                await scheduleService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
+        }
     }
 }

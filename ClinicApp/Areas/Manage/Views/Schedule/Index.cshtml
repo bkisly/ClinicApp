@@ -51,7 +51,7 @@
                     <td>@entry.Begin.ToShortTimeString()</td>
                     <td>@entry.End.ToShortTimeString()</td>
                     <td><a class="btn btn-outline-primary rounded-pill" asp-controller="Schedule" asp-action="Edit" asp-route-id="@entry.Id">Edit</a></td>
-                    <td><a class="btn btn-outline-danger rounded-pill">Delete</a></td>
+                    <td><a class="btn btn-outline-danger rounded-pill btn-schedule-delete" schedule-id="@entry.Id">Delete</a></td>
                 </tr>
             }
             </tbody>
@@ -62,3 +62,7 @@
         <p class="h4 text-muted">There aren't any schedule entries for the selected range.</p>
     }
 </div>
+
+@section Scripts {
+    <script src="~/js/deleteScheduleEntry.js"></script>
+}
