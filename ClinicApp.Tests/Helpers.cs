@@ -52,6 +52,7 @@ namespace ClinicApp.Tests
 
             mgr.Setup(x => x.DeleteAsync(It.IsAny<TUser>())).ReturnsAsync(IdentityResult.Success);
             mgr.Setup(x => x.CreateAsync(It.IsAny<TUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success).Callback<TUser, string>((x, y) => users.Add(x));
+
             mgr.Setup(x => x.UpdateAsync(It.IsAny<TUser>())).ReturnsAsync(IdentityResult.Success);
             mgr.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new Func<string, TUser?>(userName => users.SingleOrDefault(u => u.UserName == userName)));
@@ -59,10 +60,29 @@ namespace ClinicApp.Tests
             return mgr;
         }
 
-        public static Mock<IUserDependenciesProvider> GetUserManagerProviderMock<TUser>(IList<TUser> users)
+        public static Mock<UserManager<IdentityUser>> GetDefaultUserManagerMock(IList<IdentityUser> users)
+        {
+            var store = new Mock<IUserStore<IdentityUser>>();
+            var mgr = new Mock<UserManager<IdentityUser>>(store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+            mgr.Object.UserValidators.Add(new UserValidator<IdentityUser>());
+            mgr.Object.PasswordValidators.Add(new PasswordValidator<IdentityUser>());
+
+            mgr.Setup(x => x.DeleteAsync(It.IsAny<IdentityUser>())).ReturnsAsync(IdentityResult.Success);
+            mgr.Setup(x => x.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success).Callback<IdentityUser, string>((x, y) => users.Add(x));
+
+            mgr.Setup(x => x.UpdateAsync(It.IsAny<IdentityUser>())).ReturnsAsync(IdentityResult.Success);
+            mgr.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(new Func<string, IdentityUser?>(userName => users.SingleOrDefault(u => u.UserName == userName)));
+
+            return mgr;
+        }
+
+        public static Mock<IUserDependenciesProvider> GetUserManagerProviderMock<TUser>(IList<TUser> users, IList<IdentityUser>? defaultUsers = null)
             where TUser : IdentityUser
         {
             var mock = new Mock<IUserDependenciesProvider>();
+
+            mock.SetupGet(p => p.DefaultManager).Returns(GetDefaultUserManagerMock(defaultUsers ?? new List<IdentityUser>()).Object);
             mock.Setup(p => p.ProvideManager(It.IsAny<TUser>())).Returns(GetUserManagerMock(users).Object);
             mock.Setup(p => p.ProvideRoleName(It.IsAny<Manager>())).Returns(Constants.Roles.ManagerRoleName);
             mock.Setup(p => p.ProvideRoleName(It.IsAny<Patient>())).Returns(Constants.Roles.PatientRoleName);

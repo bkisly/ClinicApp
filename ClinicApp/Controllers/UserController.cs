@@ -54,20 +54,14 @@ namespace ClinicApp.Controllers
                     return View(registrationViewModel);
                 }
 
-                try
-                {
-                    var patient = new Patient { UserName = registrationViewModel.UserName };
-                    var result = await _registrationService.RegisterAsync(patient, registrationViewModel.Password);
+                var patient = new Patient { UserName = registrationViewModel.UserName };
+                var result = await _registrationService.RegisterAsync(patient, registrationViewModel.Password);
 
-                    if (result == RegistrationResult.UserExists)
-                        ModelState.AddModelError("UserName", "A user with the specified name already exists.");
+                if (result.Succeeded)
+                    return RedirectToAction(nameof(HomeController.Index), "Home");
 
-                    else return RedirectToAction(nameof(HomeController.Index), "Home");
-                }
-                catch (ArgumentException e)
-                {
-                    ModelState.AddModelError("Password", e.Message);
-                }
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
             }
 
             return View(registrationViewModel);

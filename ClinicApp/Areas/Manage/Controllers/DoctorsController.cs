@@ -46,19 +46,15 @@ namespace ClinicApp.Areas.Manage.Controllers
                 return View(DefaultViewModel);
             }
 
-            try
-            {
-                var speciality = _specialityRepository.GetById(viewModel.SpecialityId);
-                var doctor = new Doctor { UserName = viewModel.UserName, Speciality = speciality };
-                if (await _registrationService.RegisterAsync(doctor, viewModel.Password) == RegistrationResult.Succeeded)
-                    return RedirectToAction(nameof(Index));
+            var speciality = _specialityRepository.GetById(viewModel.SpecialityId);
+            var doctor = new Doctor { UserName = viewModel.UserName, Speciality = speciality };
+            var result = await _registrationService.RegisterAsync(doctor, viewModel.Password);
 
-                ModelState.AddModelError("UserName", "User with the specified name already exists.");
-            }
-            catch (ArgumentException e)
-            {
-                ModelState.AddModelError("Password", e.Message);
-            }
+            if (result.Succeeded)
+                return RedirectToAction(nameof(Index));
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
 
             return View(DefaultViewModel);
 
