@@ -1,4 +1,5 @@
 ﻿using ClinicApp.Models.Dto;
+using ClinicApp.Models.Users;
 using ClinicApp.Services.User;
 using ClinicApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -55,10 +56,12 @@ namespace ClinicApp.Controllers
 
                 try
                 {
-                    var result = await _registrationService.RegisterPatient(registrationViewModel.UserName, registrationViewModel.Password);
+                    var patient = new Patient { UserName = registrationViewModel.UserName };
+                    var result = await _registrationService.RegisterAsync(patient, registrationViewModel.Password);
 
                     if (result == RegistrationResult.UserExists)
                         ModelState.AddModelError("UserName", "A user with the specified name already exists.");
+
                     else return RedirectToAction(nameof(HomeController.Index), "Home");
                 }
                 catch (ArgumentException e)

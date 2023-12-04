@@ -11,17 +11,17 @@ namespace ClinicApp.Areas.Manage.Controllers
     public class PatientsController : Controller
     {
         private readonly IUserService _userService;
-        private readonly IUserManagerProvider _userManagerProvider;
+        private readonly IUserDependenciesProvider _userDependenciesProvider;
 
         private PatientsViewModel DefaultViewModel => new()
         {
-            Patients = _userManagerProvider.Provide(new Patient()).Users.ToList()
+            Patients = _userDependenciesProvider.ProvideManager(new Patient()).Users.ToList()
         };
 
-        public PatientsController(IUserService userService, IUserManagerProvider userManagerProvider)
+        public PatientsController(IUserService userService, IUserDependenciesProvider userDependenciesProvider)
         {
             _userService = userService;
-            _userManagerProvider = userManagerProvider;
+            _userDependenciesProvider = userDependenciesProvider;
         }
 
         public IActionResult Index()

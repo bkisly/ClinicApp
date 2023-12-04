@@ -32,7 +32,8 @@ namespace ClinicApp.Infrastructure
 
         public static async Task CreateManagerAccount(IRegistrationService registrationService, string managerUserName, string managerPassword)
         {
-            await registrationService.RegisterManager(managerUserName, managerPassword);
+            var manager = new Manager { UserName = managerUserName };
+            await registrationService.RegisterAsync(manager, managerPassword);
         }
 
         public static IEnumerable<Speciality> GetSpecialities() => new[]

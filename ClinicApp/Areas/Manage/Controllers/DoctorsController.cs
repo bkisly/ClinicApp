@@ -13,21 +13,21 @@ namespace ClinicApp.Areas.Manage.Controllers
     public class DoctorsController : Controller
     {
         private readonly IRegistrationService _registrationService;
-        private readonly IUserManagerProvider _userManagerProvider;
+        private readonly IUserDependenciesProvider _userDependenciesProvider;
         private readonly ISpecialityRepository _specialityRepository;
 
         private DoctorRegistrationViewModel DefaultViewModel => new() { Specialities = _specialityRepository.Specialities.ToList() };
 
-        public DoctorsController(IRegistrationService registrationService, IUserManagerProvider userManagerProvider, ISpecialityRepository specialityRepository)
+        public DoctorsController(IRegistrationService registrationService, IUserDependenciesProvider userDependenciesProvider, ISpecialityRepository specialityRepository)
         {
             _registrationService = registrationService;
-            _userManagerProvider = userManagerProvider;
+            _userDependenciesProvider = userDependenciesProvider;
             _specialityRepository = specialityRepository;
         }
 
         public IActionResult Index()
         {
-            return View(_userManagerProvider.Provide(new Doctor()).Users.Include(d => d.Speciality).ToList());
+            return View(_userDependenciesProvider.ProvideManager(new Doctor()).Users.Include(d => d.Speciality).ToList());
         }
 
         public IActionResult Register()
@@ -48,8 +48,9 @@ namespace ClinicApp.Areas.Manage.Controllers
 
             try
             {
-                if (await _registrationService.RegisterDoctor(viewModel.UserName, viewModel.Password,
-                        viewModel.SpecialityId) == RegistrationResult.Succeeded)
+                var speciality = _specialityRepository.GetById(viewModel.SpecialityId);
+                var doctor = new Doctor { UserName = viewModel.UserName, Speciality = speciality };
+                if (await _registrationService.RegisterAsync(doctor, viewModel.Password) == RegistrationResult.Succeeded)
                     return RedirectToAction(nameof(Index));
 
                 ModelState.AddModelError("UserName", "User with the specified name already exists.");

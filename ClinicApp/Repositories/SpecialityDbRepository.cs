@@ -3,21 +3,16 @@ using ClinicApp.Models;
 
 namespace ClinicApp.Repositories
 {
-    public class SpecialityDbRepository : ISpecialityRepository
+    public class SpecialityDbRepository(ApplicationDbContext context) : ISpecialityRepository
     {
-        private readonly ApplicationDbContext _context;
+        public IQueryable<Speciality> Specialities => context.Specialities;
 
-        public IQueryable<Speciality> Specialities => _context.Specialities;
-
-        public SpecialityDbRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        public Speciality GetById(byte id) => context.Specialities.Single(s => s.Id == id);
 
         public void AddSpeciality(Speciality speciality)
         {
-            _context.Specialities.Add(speciality);
-            _context.SaveChanges();
+            context.Specialities.Add(speciality);
+            context.SaveChanges();
         }
     }
 }

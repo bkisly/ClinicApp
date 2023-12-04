@@ -4,16 +4,16 @@ namespace ClinicApp.Services.User
 {
     public class UserService : IUserService
     {
-        private readonly IUserManagerProvider _userManagerProvider;
+        private readonly IUserDependenciesProvider _userDependenciesProvider;
 
-        public UserService(IUserManagerProvider userManagerProvider)
+        public UserService(IUserDependenciesProvider userDependenciesProvider)
         {
-            _userManagerProvider = userManagerProvider;
+            _userDependenciesProvider = userDependenciesProvider;
         }
 
         public async Task ActivatePatient(string patientId)
         {
-            var mgr = _userManagerProvider.Provide(new Patient());
+            var mgr = _userDependenciesProvider.ProvideManager(new Patient());
             var patient = await mgr.FindByIdAsync(patientId);
 
             if (patient != null)

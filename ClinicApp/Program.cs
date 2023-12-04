@@ -46,7 +46,7 @@ builder.Services.AddScoped<ISpecialityRepository, SpecialityDbRepository>();
 builder.Services.AddScoped<IScheduleEntryRepository, ScheduleEntryDbRepository>();
 
 // Add infrastructural services
-builder.Services.AddScoped<IUserManagerProvider, UserManagerProvider>();
+builder.Services.AddScoped<IUserDependenciesProvider, UserDependenciesProvider>();
 builder.Services.AddScoped<IClinicConfigurationBuilder, ClinicConfigurationBuilder>();
 
 // Add services

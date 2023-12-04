@@ -1,9 +1,10 @@
-﻿using ClinicApp.Models.Users;
+﻿using ClinicApp.Infrastructure;
+using ClinicApp.Models.Users;
 using Microsoft.AspNetCore.Identity;
 
 namespace ClinicApp.Services.User
 {
-    public class UserManagerProvider : IUserManagerProvider
+    public class UserDependenciesProvider : IUserDependenciesProvider
     {
         private readonly UserManager<Manager> _managerUserManager;
         private readonly UserManager<Doctor> _doctorUserManager;
@@ -11,7 +12,7 @@ namespace ClinicApp.Services.User
 
         public UserManager<IdentityUser> DefaultManager { get; }
 
-        public UserManagerProvider(UserManager<IdentityUser> defaultUserManager, UserManager<Manager> managerUserManager, 
+        public UserDependenciesProvider(UserManager<IdentityUser> defaultUserManager, UserManager<Manager> managerUserManager, 
             UserManager<Doctor> doctorUserManager, UserManager<Patient> patientUserManager)
         {
             DefaultManager = defaultUserManager;
@@ -20,8 +21,16 @@ namespace ClinicApp.Services.User
             _patientUserManager = patientUserManager;
         }
 
-        public UserManager<TUser> Provide<TUser>(TUser user) where TUser : IdentityUser
+        public UserManager<TUser> ProvideManager<TUser>(TUser user) where TUser : IdentityUser
             => (UserManager<TUser>)GetManager(user);
+
+        public string? ProvideRoleName<TUser>(TUser user) where TUser : IdentityUser => user switch
+        {
+            Manager => Constants.Roles.ManagerRoleName,
+            Doctor => Constants.Roles.DoctorRoleName,
+            Patient => Constants.Roles.PatientRoleName,
+            _ => null
+        };
 
         private object GetManager<TUser>(TUser user) => user switch
         {

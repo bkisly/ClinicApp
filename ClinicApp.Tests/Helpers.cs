@@ -1,5 +1,7 @@
 ﻿using ClinicApp.Data;
+using ClinicApp.Infrastructure;
 using ClinicApp.Models;
+using ClinicApp.Models.Users;
 using ClinicApp.Repositories;
 using ClinicApp.Services.User;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +24,8 @@ namespace ClinicApp.Tests
             var mock = new Mock<ISpecialityRepository>();
 
             mock.SetupGet(repository => repository.Specialities).Returns(specialities.AsQueryable());
+            mock.Setup(repository => repository.GetById(It.IsAny<byte>()))
+                .Returns((byte id) => specialities.Single(s => s.Id == id));
             mock.Setup(repository => repository.AddSpeciality(It.IsAny<Speciality>()))
                 .Callback((Speciality s) => specialities.Add(s));
 
@@ -55,11 +59,14 @@ namespace ClinicApp.Tests
             return mgr;
         }
 
-        public static Mock<IUserManagerProvider> GetUserManagerProviderMock<TUser>(IList<TUser> users)
+        public static Mock<IUserDependenciesProvider> GetUserManagerProviderMock<TUser>(IList<TUser> users)
             where TUser : IdentityUser
         {
-            var mock = new Mock<IUserManagerProvider>();
-            mock.Setup(p => p.Provide(It.IsAny<TUser>())).Returns(GetUserManagerMock(users).Object);
+            var mock = new Mock<IUserDependenciesProvider>();
+            mock.Setup(p => p.ProvideManager(It.IsAny<TUser>())).Returns(GetUserManagerMock(users).Object);
+            mock.Setup(p => p.ProvideRoleName(It.IsAny<Manager>())).Returns(Constants.Roles.ManagerRoleName);
+            mock.Setup(p => p.ProvideRoleName(It.IsAny<Patient>())).Returns(Constants.Roles.PatientRoleName);
+            mock.Setup(p => p.ProvideRoleName(It.IsAny<Doctor>())).Returns(Constants.Roles.DoctorRoleName);
             return mock;
         }
     }
