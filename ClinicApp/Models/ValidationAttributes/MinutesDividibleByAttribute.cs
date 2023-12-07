@@ -6,10 +6,18 @@ namespace ClinicApp.Models.ValidationAttributes
     {
         public override bool IsValid(object? value)
         {
-            if(value == null) return false;
-
-            var time = (TimeOnly)value;
-            return time.Minute % minutes == 0;
+            switch (value)
+            {
+                case null:
+                    return false;
+                case TimeOnly time:
+                    return time.Minute % minutes == 0;
+                default:
+                {
+                    var dateTime = (DateTime)value;
+                    return dateTime.Minute % minutes == 0;
+                }
+            }
         }
     }
 }
