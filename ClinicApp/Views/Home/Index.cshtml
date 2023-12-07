@@ -1,4 +1,6 @@
 ﻿@using ClinicApp.Infrastructure
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
 @model IndexViewModel
 @{
     ViewData["Title"] = "Home page";
@@ -11,7 +13,31 @@
     @switch (Model.RoleName)
     {
         case Constants.Roles.PatientRoleName:
-            <partial name="_DoctorsList"/>
+        {
+            @if (!Model.IsActivated)
+            {
+                <p class="h6 text-danger">Currently your account is not activated, so you're not able to sign in for a visit to any doctor.
+                    Please wait until a Manager activates your account.
+                </p>
+            }
+            <partial name="_DoctorsList" model="@Model.Doctors"/>
+            break;
+        }
+        case Constants.Roles.DoctorRoleName:
+            <p>Currently signed in as a Doctor.</p>
+            break;
+        case Constants.Roles.ManagerRoleName:
+            <p>Currently signed in as a Manager.</p>
+            break;
+        default:
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <p>User signed in.</p>
+            }
+            else
+            {
+                <p>User not signed in.</p>
+            }
             break;
     }
 </div>

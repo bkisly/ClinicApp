@@ -1,4 +1,5 @@
-﻿using ClinicApp.Models.Users;
+﻿using System.Security.Claims;
+using ClinicApp.Models.Users;
 
 namespace ClinicApp.Services.User
 {
@@ -22,6 +23,19 @@ namespace ClinicApp.Services.User
                 await mgr.UpdateAsync(patient);
             }
             else throw new NullReferenceException($"Patient with ID {patientId} not found.");
+        }
+
+        public async Task<string?> GetRoleForUser(ClaimsPrincipal user)
+        {
+            var mgr = _userDependenciesProvider.DefaultManager;
+            var id = mgr.GetUserId(user);
+
+            if (id == null)
+                return null;
+
+            var identityUser = await mgr.FindByIdAsync(id);
+
+            return identityUser == null ? null : (await mgr.GetRolesAsync(identityUser)).FirstOrDefault();
         }
     }
 }
