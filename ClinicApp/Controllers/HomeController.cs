@@ -1,6 +1,7 @@
 ﻿using ClinicApp.Infrastructure;
 using ClinicApp.Models;
 using ClinicApp.Models.Users;
+using ClinicApp.Repositories;
 using ClinicApp.Services.Schedule;
 using ClinicApp.Services.User;
 using ClinicApp.Services.Visit;
@@ -11,19 +12,23 @@ using Microsoft.EntityFrameworkCore;
 namespace ClinicApp.Controllers
 {
     public class HomeController(IUserDependenciesProvider provider, IUserService userService, 
-        IScheduleService scheduleService, IVisitService visitService) : Controller
+        IScheduleService scheduleService, IVisitService visitService, ISpecialityRepository specialityRepository) : Controller
     {
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? speciality = null)
         {
-            return View(nameof(Index), await GetViewModel());
+            return View(nameof(Index), await GetViewModel(speciality));
         }
 
-        private async Task<IndexViewModel> GetViewModel()
+        private async Task<IndexViewModel> GetViewModel(int? speciality)
         {
             var viewModel = new IndexViewModel
             {
-                Doctors = provider.ProvideManager(new Doctor()).Users.Include(d => d.Speciality),
-                RoleName = await userService.GetRoleForUser(User)
+                Doctors = provider.ProvideManager(new Doctor()).Users
+                    .Include(d => d.Speciality)
+                    .Where(d => speciality == null || d.Speciality.Id == speciality),
+                RoleName = await userService.GetRoleForUser(User),
+                Specialities = specialityRepository.Specialities.ToArray(),
+                SelectedSpeciality = speciality
             };
 
             if (User.IsInRole(Constants.Roles.PatientRoleName))
@@ -87,6 +92,12 @@ namespace ClinicApp.Controllers
                 ModelState.AddModelError("", e.Message);
                 return View(model);
             }
+        }
+
+        [HttpPost]
+        public IActionResult Search(int? selectedSpeciality)
+        {
+            return RedirectToAction(nameof(Index), new { speciality = selectedSpeciality });
         }
     }
 }

@@ -4,6 +4,7 @@
 @model IndexViewModel
 @{
     ViewData["Title"] = "Home page";
+    var defaultItem = new SelectListItem("All", null);
 }
 
 <div class="container py-3 text-center">
@@ -14,6 +15,19 @@
     {
         case Constants.Roles.PatientRoleName:
         {
+            <div class="my-3">
+                <p class="text-start mb-2">Search by specialty:</p>
+
+                <form asp-action="Search" method="post">
+                    <div class="hstack">
+                            <select asp-items="new List<SelectListItem>(Model.Specialities.Select(s => new SelectListItem(s.Name, s.Id.ToString(), s.Id == Model.SelectedSpeciality)).Prepend(defaultItem))"
+                                asp-for="@Model.SelectedSpeciality" class="form-select"></select>
+                        <button class="btn btn-outline-primary rounded-pill mx-2" type="submit">Search</button>
+                    </div>
+                </form>
+            </div>
+
+
             @if (!Model.IsActivated)
             {
                 <p class="h6 text-danger">Currently your account is not activated, so you're not able to sign in for a visit to any doctor.
