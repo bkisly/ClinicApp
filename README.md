@@ -25,20 +25,20 @@ Napisać program do obsługi przychodni.
 
 Lista lekarzy - każdy lekarz ma jedną specjalność ze stałej listy specjalnosci (domowy, laryngolog, dermatolog, okulista, neurolog, ortopeda, pediatra).
 Konto lekarza zakłada dyrektor.
-Lekaz loguje sie za pomocą hasła.
+Lekarz loguje sie za pomocą hasła.
 
 Lista pacjentów (logowanie z hasłem)
 Pacjent rejestruje się w systemie (zakłada konto), ale zapisy do lekarzy i przegladanie wizyt po uaktywnieniu konta przez dyrektora.
 
 
-Grafik na każdy kolejny tydzien: lekaz, dzien, start, koniec  np: Kowalski, 2023-11-08 8.00 12.00. W ramach jednego wpisu w grafiku moze odbyć się wiele wizyt.
+Grafik na każdy kolejny tydzien: lekarz, dzien, start, koniec  np: Kowalski, 2023-11-08 8.00 12.00. W ramach jednego wpisu w grafiku moze odbyć się wiele wizyt.
 Grafik wpisuje/modyfikuje dyrektor (dodatkowa opcja: kopiuj porzedni tydzień).
 
 ### Zadanie 2 - Migracje
 
 Pacjenci moga sie zapisywać/wypisywać z wizyt - każda wizyta trwa 15 minut. Pacjent szuka lekarza po specjalności. Wyświetlane maja być wszystkie wolne terminy wizyty wszystkich lekarzy danej specjalności w kolejnosci chronologicznej.
-Lekaz na wizycie wpisuje do wizyty opis (dowolny tekst).
+Lekarz na wizycie wpisuje do wizyty opis (dowolny tekst).
 
 Pacjent może przeglądać odbyte wizyty i czytać ich opisy.
 
-Dyrektor może dla podanego okresu (tylko pełne dni) wygenerować raport gdzie dla kazdego lekaża bedzie podany czas z grafiku oraz liczba przeprowadzonych wizyt.
+Dyrektor może dla podanego okresu (tylko pełne dni) wygenerować raport gdzie dla kazdego lekarza bedzie podany czas z grafiku oraz liczba przeprowadzonych wizyt.

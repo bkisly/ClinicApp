@@ -1,4 +1,5 @@
 ﻿using ClinicApp.Infrastructure;
+using ClinicApp.Models;
 using ClinicApp.Models.Users;
 using ClinicApp.Services.Schedule;
 using ClinicApp.Services.User;
@@ -36,6 +37,14 @@ namespace ClinicApp.Controllers
 
         public async Task<IActionResult> Visit(string doctorId)
         {
+            if (string.IsNullOrEmpty(doctorId))
+                return NotFound();
+
+            var doctor = await provider.ProvideManager(new Doctor()).FindByIdAsync(doctorId);
+
+            if(doctor == null)
+                return NotFound();
+
             var availableVisits = new List<DateTime>();
             var scheduleEntries = (await scheduleService.GetEntriesByDoctor(doctorId))
                 .ToArray();
@@ -45,11 +54,39 @@ namespace ClinicApp.Controllers
                     .Where(d => d >= DateTime.Now)
                     .OrderBy(d => d));
 
+            var patient = await provider.ProvideManager(new Patient()).GetUserAsync(User);
+
             return View(new VisitViewModel
             {
-                DoctorId = doctorId,
-                AvailableVisits = availableVisits
+                PatientId = patient?.Id,
+                DoctorId = doctor.Id,
+                AvailableVisits = availableVisits,
+                IsActivated = patient?.IsActivated ?? false
             });
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Visit(VisitViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                await visitService.AddAsync(new Visit
+                {
+                    Date = model.Date,
+                    DoctorId = model.DoctorId,
+                    PatientId = model.PatientId!
+                });
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("", e.Message);
+                return View(model);
+            }
         }
     }
 }

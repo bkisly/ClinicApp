@@ -11,7 +11,9 @@ namespace ClinicApp.Models
         public DateTime Date { get; set; }
         public string? Description { get; set; }
         public Patient Patient { get; set; } = null!;
+        public string PatientId { get; set; } = null!;
         public Doctor Doctor { get; set; } = null!;
+        public string DoctorId { get; set; } = null!;
 
         public void CopyTo(Visit obj)
         {

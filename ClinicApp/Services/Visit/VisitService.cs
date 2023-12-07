@@ -29,5 +29,10 @@ namespace ClinicApp.Services.Visit
 
             return allDates.Except(takenDates.AsEnumerable());
         }
+
+        public async Task AddAsync(Models.Visit visit)
+        {
+            await visitRepository.AddAsync(visit);
+        }
     }
 }

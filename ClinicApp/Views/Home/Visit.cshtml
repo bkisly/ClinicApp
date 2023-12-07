@@ -6,34 +6,44 @@
 <div class="container py-3 text-center">
     <h1 class="display-4 mb-3">@ViewData["Title"]</h1>
     <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">Back</a>
-
-    @if (Model.AvailableVisits.Any())
+    
+    @if (Model is { PatientId: not null, IsActivated: true })
     {
-        <div class="text-start my-3">
-            @foreach (var group in Model.AvailableVisits.GroupBy(v => v.Date))
-            {
-                <div class="card my-2">
-                    <div class="card-body">
-                        <h2 class="h4">@group.Key.ToShortDateString()</h2>
+        @if (Model.AvailableVisits != null && Model.AvailableVisits.Any())
+        {
+            <div class="text-start my-3">
+                @foreach (var group in Model.AvailableVisits.GroupBy(v => v.Date))
+                {
+                    <div class="card my-2">
+                        <div class="card-body">
+                            <h2 class="h4">@group.Key.ToShortDateString()</h2>
 
-                        <div class="row row-cols-auto g-2">
-                            @foreach (var dateTime in group)
-                            {
-                                <div class="col">
-                                    <form asp-action="Visit" method="post">
-                                        <button class="btn btn-sm btn-outline-success rounded-pill">@dateTime.ToShortTimeString()</button>
-                                    </form>
-                                </div>
-                            }
+                            <div class="row row-cols-auto g-2">
+                                @foreach (var dateTime in group)
+                                {
+                                    <div class="col">
+                                        <form asp-action="Visit" method="post">
+                                            <input type="hidden" asp-for="PatientId" value="@Model.PatientId"/>
+                                            <input type="hidden" asp-for="DoctorId" value="@Model.DoctorId"/>
+                                            <input type="hidden" asp-for="Date" value="@dateTime"/>
+                                            <button class="btn btn-sm btn-outline-success rounded-pill" type="submit">@dateTime.ToShortTimeString()</button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
 
-            }
-        </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="h4 text-muted my-3">This doctor does not have any available visits slots.</p>
+        }
     }
     else
     {
-        <p class="h4 text-muted">This doctor does not have any available visits slots.</p>
+        <p class="h6 text-danger my-3">You must be logged in as a patient and have your account activated in order to sign up for a visit.</p>
     }
 </div>

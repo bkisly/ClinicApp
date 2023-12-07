@@ -19,14 +19,16 @@ namespace ClinicApp.Areas.Manage.Controllers
 
             try
             {
-                var entries = scheduleService.GetEntriesByWeek(weekNumber, id);
+                var entries = scheduleService.GetEntriesByWeek(weekNumber, id)
+                    .OrderBy(e => e.Date)
+                    .ThenBy(e => e.Begin);
+
                 return View(new ScheduleEntriesViewModel { WeekNumber = weekNumber, ScheduleEntries = entries, DoctorId = id });
             }
             catch (ArgumentOutOfRangeException)
             {
                 return NotFound();
             }
-
         }
 
         [HttpPost, ValidateAntiForgeryToken]
