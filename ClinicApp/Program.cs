@@ -44,6 +44,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Add repositories
 builder.Services.AddScoped<ISpecialityRepository, SpecialityDbRepository>();
 builder.Services.AddScoped<IScheduleEntryRepository, ScheduleEntryDbRepository>();
+builder.Services.AddScoped<IVisitRepository, VisitDbRepository>();
 
 // Add infrastructural services
 builder.Services.AddScoped<IUserDependenciesProvider, UserDependenciesProvider>();
