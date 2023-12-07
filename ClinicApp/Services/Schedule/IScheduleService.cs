@@ -6,6 +6,7 @@ namespace ClinicApp.Services.Schedule
     {
         IEnumerable<ScheduleEntry> GetEntriesByWeek(int week, string doctorId);
         Task CopyPreviousWeek(int previousWeek, string doctorId);
+        Task<IEnumerable<ScheduleEntry>> GetEntriesByDoctor(string doctorId);
 
         Task<ScheduleEntry> GetByIdAsync(int id);
         Task AddAsync(ScheduleEntry scheduleEntry);

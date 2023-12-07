@@ -31,6 +31,11 @@ namespace ClinicApp.Services.Schedule
             }
         }
 
+        public async Task<IEnumerable<ScheduleEntry>> GetEntriesByDoctor(string doctorId)
+            => await repository.ScheduleEntries
+                .Where(e => e.DoctorId == doctorId)
+                .ToArrayAsync();
+
         public async Task<ScheduleEntry> GetByIdAsync(int id) => await repository.GetByIdAsync(id);
 
         public async Task AddAsync(ScheduleEntry scheduleEntry)
