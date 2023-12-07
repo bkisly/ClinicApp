@@ -1,9 +1,13 @@
 ﻿using ClinicApp.Infrastructure;
+using ClinicApp.Models.Users;
+using ClinicApp.Services.User;
+using ClinicApp.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicApp.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(IUserDependenciesProvider provider) : Controller
     {
         public IActionResult Index()
         {
@@ -14,6 +18,10 @@ namespace ClinicApp.Controllers
             else if (User.IsInRole(Constants.Roles.PatientRoleName)) customContent = "Patient";
 
             return View(nameof(Index), customContent);
+        }
+
+        private async Task<IndexViewModel> GetViewModel()
+        {
         }
     }
 }
