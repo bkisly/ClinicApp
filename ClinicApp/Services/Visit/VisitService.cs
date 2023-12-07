@@ -13,6 +13,7 @@ namespace ClinicApp.Services.Visit
             var takenDates = visitRepository.Visits
                 .Include(v => v.Doctor)
                 .Where(v => v.Doctor.Id == entry.DoctorId)
+                .AsEnumerable()
                 .Where(v => DateOnly.FromDateTime(v.Date) == entry.Date)
                 .Where(v => TimeOnly.FromDateTime(v.Date) >= entry.Begin)
                 .Where(v => TimeOnly.FromDateTime(v.Date) < entry.End)

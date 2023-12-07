@@ -9,7 +9,8 @@
                 <div class="card-body">
                     <p class="h4">@doctor.UserName</p>
                     <p>@doctor.Speciality.Name</p>
-                    <a href="#" class="btn btn-outline-primary rounded-pill">Sign up for a visit...</a>
+                    <a asp-controller="Home" asp-action="Visit" asp-route-doctorId="@doctor.Id" 
+                       class="btn btn-outline-primary rounded-pill">Sign up for a visit...</a>
                 </div>
             </div>
         }
