@@ -36,14 +36,14 @@ namespace ClinicApp.Tests
             Assert.True(result1.Succeeded);
             Assert.Equal("doctor1", doctors[0].UserName);
             Assert.Equivalent(specialities[0], doctors[0].Speciality);
-            providerMock.Verify(p => p.ProvideManager(doctors[0]).CreateAsync(doctors[0], "P@ssw0rd"), Times.Once);
-            providerMock.Verify(p => p.ProvideManager(doctors[0]).AddToRoleAsync(doctors[0], Constants.Roles.DoctorRoleName), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Doctor>().CreateAsync(doctors[0], "P@ssw0rd"), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Doctor>().AddToRoleAsync(doctors[0], Constants.Roles.DoctorRoleName), Times.Once);
 
             Assert.True(result2.Succeeded);
             Assert.Equal("doctor2", doctors[1].UserName);
             Assert.Equivalent(specialities[1], doctors[1].Speciality);
-            providerMock.Verify(p => p.ProvideManager(doctors[1]).CreateAsync(doctors[1], "p@Ssw0rd"), Times.Once);
-            providerMock.Verify(p => p.ProvideManager(doctors[1]).AddToRoleAsync(doctors[1], Constants.Roles.DoctorRoleName), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Doctor>().CreateAsync(doctors[1], "p@Ssw0rd"), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Doctor>().AddToRoleAsync(doctors[1], Constants.Roles.DoctorRoleName), Times.Once);
         }
 
         [Fact]
@@ -69,13 +69,13 @@ namespace ClinicApp.Tests
 
             Assert.True(result1.Succeeded);
             Assert.Equal("patient1", patients[0].UserName);
-            providerMock.Verify(p => p.ProvideManager(patients[0]).CreateAsync(patients[0], "P@ssw0rd"), Times.Once);
-            providerMock.Verify(p => p.ProvideManager(patients[0]).AddToRoleAsync(patients[0], Constants.Roles.PatientRoleName), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Patient>().CreateAsync(patients[0], "P@ssw0rd"), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Patient>().AddToRoleAsync(patients[0], Constants.Roles.PatientRoleName), Times.Once);
 
             Assert.True(result2.Succeeded);
             Assert.Equal("patient2", patients[1].UserName);
-            providerMock.Verify(p => p.ProvideManager(patients[1]).CreateAsync(patients[1], "p@Ssw0rd"), Times.Once);
-            providerMock.Verify(p => p.ProvideManager(patients[1]).AddToRoleAsync(patients[1], Constants.Roles.PatientRoleName), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Patient>().CreateAsync(patients[1], "p@Ssw0rd"), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Patient>().AddToRoleAsync(patients[1], Constants.Roles.PatientRoleName), Times.Once);
         }
 
         [Fact]
@@ -101,13 +101,13 @@ namespace ClinicApp.Tests
 
             Assert.True(result1.Succeeded);
             Assert.Equal("manager1", managers[0].UserName);
-            providerMock.Verify(p => p.ProvideManager(managers[0]).CreateAsync(managers[0], "P@ssw0rd"), Times.Once);
-            providerMock.Verify(p => p.ProvideManager(managers[0]).AddToRoleAsync(managers[0], Constants.Roles.ManagerRoleName), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Manager>().CreateAsync(managers[0], "P@ssw0rd"), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Manager>().AddToRoleAsync(managers[0], Constants.Roles.ManagerRoleName), Times.Once);
 
             Assert.True(result2.Succeeded);
             Assert.Equal("manager2", managers[1].UserName);
-            providerMock.Verify(p => p.ProvideManager(managers[1]).CreateAsync(managers[1], "p@Ssw0rd"), Times.Once);
-            providerMock.Verify(p => p.ProvideManager(managers[1]).AddToRoleAsync(managers[1], Constants.Roles.ManagerRoleName), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Manager>().CreateAsync(managers[1], "p@Ssw0rd"), Times.Once);
+            providerMock.Verify(p => p.ProvideManager<Manager>().AddToRoleAsync(managers[1], Constants.Roles.ManagerRoleName), Times.Once);
         }
 
         [Fact]
@@ -132,7 +132,7 @@ namespace ClinicApp.Tests
             Assert.Single(doctors);
             Assert.False(result.Succeeded);
             Assert.Single(result.Errors);
-            providerMock.Verify(p => p.ProvideManager(It.IsAny<Doctor>()).CreateAsync(It.IsAny<Doctor>(), It.IsAny<string>()), Times.Never);
+            providerMock.Verify(p => p.ProvideManager<Doctor>().CreateAsync(It.IsAny<Doctor>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -155,7 +155,7 @@ namespace ClinicApp.Tests
             Assert.Single(patients);
             Assert.False(result.Succeeded);
             Assert.Single(result.Errors);
-            providerMock.Verify(p => p.ProvideManager(It.IsAny<Patient>()).CreateAsync(It.IsAny<Patient>(), It.IsAny<string>()), Times.Never);
+            providerMock.Verify(p => p.ProvideManager<Patient>().CreateAsync(It.IsAny<Patient>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -178,7 +178,7 @@ namespace ClinicApp.Tests
             Assert.Single(managers);
             Assert.False(result.Succeeded);
             Assert.Single(result.Errors);
-            providerMock.Verify(p => p.ProvideManager(It.IsAny<Manager>()).CreateAsync(It.IsAny<Manager>(), It.IsAny<string>()), Times.Never);
+            providerMock.Verify(p => p.ProvideManager<Manager>().CreateAsync(It.IsAny<Manager>(), It.IsAny<string>()), Times.Never);
         }
     }
 }

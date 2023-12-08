@@ -4,9 +4,9 @@ namespace ClinicApp.Services.User
 {
     public class RegistrationService(IUserDependenciesProvider userDependenciesProvider) : IRegistrationService
     {
-        public async Task<IdentityResult> RegisterAsync<TUser>(TUser user, string password) where TUser : IdentityUser
+        public async Task<IdentityResult> RegisterAsync<TUser>(TUser user, string password) where TUser : IdentityUser, new()
         {
-            var manager = userDependenciesProvider.ProvideManager(user);
+            var manager = userDependenciesProvider.ProvideManager<TUser>();
 
             if (await userDependenciesProvider.DefaultManager.FindByNameAsync(user.UserName ?? string.Empty) != null)
                 return IdentityResult.Failed(new IdentityError
@@ -19,7 +19,7 @@ namespace ClinicApp.Services.User
 
             if (result.Succeeded)
             {
-                var roleName = userDependenciesProvider.ProvideRoleName(user);
+                var roleName = userDependenciesProvider.ProvideRoleName<TUser>();
                 if (roleName != null)
                     await manager.AddToRoleAsync(user, roleName);
             }

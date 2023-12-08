@@ -23,7 +23,7 @@ namespace ClinicApp.Controllers
         {
             var viewModel = new IndexViewModel
             {
-                Doctors = provider.ProvideManager(new Doctor()).Users
+                Doctors = provider.ProvideManager<Doctor>().Users
                     .Include(d => d.Speciality)
                     .Where(d => speciality == null || d.Speciality.Id == speciality),
                 RoleName = await userService.GetRoleForUser(User),
@@ -33,7 +33,7 @@ namespace ClinicApp.Controllers
 
             if (User.IsInRole(Constants.Roles.PatientRoleName))
             {
-                var patient = await provider.ProvideManager(new Patient()).FindByNameAsync(User.Identity!.Name!);
+                var patient = await provider.ProvideManager<Patient>().GetUserAsync(User);
                 viewModel.IsActivated = patient?.IsActivated ?? false;
             }
 
@@ -45,7 +45,7 @@ namespace ClinicApp.Controllers
             if (string.IsNullOrEmpty(doctorId))
                 return NotFound();
 
-            var doctor = await provider.ProvideManager(new Doctor()).FindByIdAsync(doctorId);
+            var doctor = await provider.ProvideManager<Doctor>().FindByIdAsync(doctorId);
 
             if(doctor == null)
                 return NotFound();
@@ -59,7 +59,7 @@ namespace ClinicApp.Controllers
                     .Where(d => d >= DateTime.Now)
                     .OrderBy(d => d));
 
-            var patient = await provider.ProvideManager(new Patient()).GetUserAsync(User);
+            var patient = await provider.ProvideManager<Patient>().GetUserAsync(User);
 
             return View(new VisitViewModel
             {

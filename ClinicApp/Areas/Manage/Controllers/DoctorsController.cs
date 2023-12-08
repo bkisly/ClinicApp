@@ -10,24 +10,15 @@ using Microsoft.EntityFrameworkCore;
 namespace ClinicApp.Areas.Manage.Controllers
 {
     [Area(Constants.Areas.ManageAreaName), Authorize(Roles = Constants.Roles.ManagerRoleName)]
-    public class DoctorsController : Controller
+    public class DoctorsController(IRegistrationService registrationService,
+            IUserDependenciesProvider userDependenciesProvider, ISpecialityRepository specialityRepository)
+        : Controller
     {
-        private readonly IRegistrationService _registrationService;
-        private readonly IUserDependenciesProvider _userDependenciesProvider;
-        private readonly ISpecialityRepository _specialityRepository;
-
-        private DoctorRegistrationViewModel DefaultViewModel => new() { Specialities = _specialityRepository.Specialities.ToList() };
-
-        public DoctorsController(IRegistrationService registrationService, IUserDependenciesProvider userDependenciesProvider, ISpecialityRepository specialityRepository)
-        {
-            _registrationService = registrationService;
-            _userDependenciesProvider = userDependenciesProvider;
-            _specialityRepository = specialityRepository;
-        }
+        private DoctorRegistrationViewModel DefaultViewModel => new() { Specialities = specialityRepository.Specialities.ToList() };
 
         public IActionResult Index()
         {
-            return View(_userDependenciesProvider.ProvideManager(new Doctor()).Users.Include(d => d.Speciality).ToList());
+            return View(userDependenciesProvider.ProvideManager<Doctor>().Users.Include(d => d.Speciality).ToList());
         }
 
         public IActionResult Register()
@@ -46,9 +37,9 @@ namespace ClinicApp.Areas.Manage.Controllers
                 return View(DefaultViewModel);
             }
 
-            var speciality = _specialityRepository.GetById(viewModel.SpecialityId);
+            var speciality = specialityRepository.GetById(viewModel.SpecialityId);
             var doctor = new Doctor { UserName = viewModel.UserName, Speciality = speciality };
-            var result = await _registrationService.RegisterAsync(doctor, viewModel.Password);
+            var result = await registrationService.RegisterAsync(doctor, viewModel.Password);
 
             if (result.Succeeded)
                 return RedirectToAction(nameof(Index));

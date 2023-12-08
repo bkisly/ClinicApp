@@ -78,15 +78,15 @@ namespace ClinicApp.Tests
         }
 
         public static Mock<IUserDependenciesProvider> GetUserManagerProviderMock<TUser>(IList<TUser> users, IList<IdentityUser>? defaultUsers = null)
-            where TUser : IdentityUser
+            where TUser : IdentityUser, new()
         {
             var mock = new Mock<IUserDependenciesProvider>();
 
             mock.SetupGet(p => p.DefaultManager).Returns(GetDefaultUserManagerMock(defaultUsers ?? new List<IdentityUser>()).Object);
-            mock.Setup(p => p.ProvideManager(It.IsAny<TUser>())).Returns(GetUserManagerMock(users).Object);
-            mock.Setup(p => p.ProvideRoleName(It.IsAny<Manager>())).Returns(Constants.Roles.ManagerRoleName);
-            mock.Setup(p => p.ProvideRoleName(It.IsAny<Patient>())).Returns(Constants.Roles.PatientRoleName);
-            mock.Setup(p => p.ProvideRoleName(It.IsAny<Doctor>())).Returns(Constants.Roles.DoctorRoleName);
+            mock.Setup(p => p.ProvideManager<TUser>()).Returns(GetUserManagerMock(users).Object);
+            mock.Setup(p => p.ProvideRoleName<Manager>()).Returns(Constants.Roles.ManagerRoleName);
+            mock.Setup(p => p.ProvideRoleName<Patient>()).Returns(Constants.Roles.PatientRoleName);
+            mock.Setup(p => p.ProvideRoleName<Doctor>()).Returns(Constants.Roles.DoctorRoleName);
             return mock;
         }
     }

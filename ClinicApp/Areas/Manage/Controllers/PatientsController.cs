@@ -8,21 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace ClinicApp.Areas.Manage.Controllers
 {
     [Area(Constants.Areas.ManageAreaName), Authorize(Roles = Constants.Roles.ManagerRoleName)]
-    public class PatientsController : Controller
+    public class PatientsController(IUserService userService, IUserDependenciesProvider userDependenciesProvider)
+        : Controller
     {
-        private readonly IUserService _userService;
-        private readonly IUserDependenciesProvider _userDependenciesProvider;
-
         private PatientsViewModel DefaultViewModel => new()
         {
-            Patients = _userDependenciesProvider.ProvideManager(new Patient()).Users.ToList()
+            Patients = userDependenciesProvider.ProvideManager<Patient>().Users.ToList()
         };
-
-        public PatientsController(IUserService userService, IUserDependenciesProvider userDependenciesProvider)
-        {
-            _userService = userService;
-            _userDependenciesProvider = userDependenciesProvider;
-        }
 
         public IActionResult Index()
         {
@@ -34,7 +26,7 @@ namespace ClinicApp.Areas.Manage.Controllers
         {
             try
             {
-                await _userService.ActivatePatient(viewModel.SelectedPatientId);
+                await userService.ActivatePatient(viewModel.SelectedPatientId);
                 return View(nameof(Index), DefaultViewModel);
             }
             catch (NullReferenceException)
