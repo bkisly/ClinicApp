@@ -46,6 +46,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<ISpecialityRepository, SpecialityDbRepository>();
 builder.Services.AddScoped<IScheduleEntryRepository, ScheduleEntryDbRepository>();
 builder.Services.AddScoped<IVisitRepository, VisitDbRepository>();
+builder.Services.AddScoped<IVisitStatusRepository, VisitStatusDbRepository>();
 
 // Add infrastructural services
 builder.Services.AddScoped<IUserDependenciesProvider, UserDependenciesProvider>();
@@ -55,7 +56,7 @@ builder.Services.AddScoped<IClinicConfigurationBuilder, ClinicConfigurationBuild
 builder.Services.AddScoped<IIdentityAuthenticationService, IdentityAuthenticationService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IScheduleService,  ScheduleService>();
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
 
 var app = builder.Build();
@@ -83,6 +84,7 @@ using (var scope = app.Services.CreateScope())
         context.Database.Migrate();
 
     DataFactory.PopulateSpecialities(serviceProvider.GetRequiredService<ISpecialityRepository>());
+    await DataFactory.PopulateVisitsStatus(serviceProvider.GetRequiredService<IVisitStatusRepository>());
 
     await DataFactory.EnsureRoles(serviceProvider.GetRequiredService<RoleManager<IdentityRole>>());
     await DataFactory.CreateManagerAccount(

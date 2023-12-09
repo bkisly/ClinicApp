@@ -36,6 +36,21 @@ namespace ClinicApp.Infrastructure
             await registrationService.RegisterAsync(manager, managerPassword);
         }
 
+        public static async Task PopulateVisitsStatus(IVisitStatusRepository repository)
+        {
+            if (repository.VisitStatus.Any())
+                return;
+
+            var statusList = new List<VisitStatus>
+            {
+                new() { Id = 1, Name = "Signed up" },
+                new() { Id = 2, Name = "Finished" },
+                new() { Id = 3, Name = "Cancelled" }
+            };
+
+            await repository.AddRangeAsync(statusList);
+        }
+
         public static IEnumerable<Speciality> GetSpecialities() => new[]
         {
             new Speciality { Id = 1, Name = "GP" },
