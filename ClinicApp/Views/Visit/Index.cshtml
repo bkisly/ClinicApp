@@ -1,0 +1,51 @@
+﻿@using ClinicApp.Infrastructure
+@model IEnumerable<Visit>
+@{
+    ViewData["Title"] = "View visits";
+}
+
+<div class="container py-3 text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    
+    @if(Model.Any())
+    {
+        <table class="table table-borderless table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Patient name</th>
+                <th>Doctor name</th>
+                <th>Status</th>
+                @if (User.IsInRole(Constants.Roles.DoctorRoleName))
+                {
+                    <th>Add description</th>
+                    <th>Mark as finished</th>
+                }
+                <th>Cancel</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var visit in Model)
+            {
+                <tr>
+                    <td>@visit.Date</td>
+                    <td>@visit.Patient.UserName</td>
+                    <td>@visit.Doctor.UserName</td>
+                    <td>@visit.VisitStatus.Name</td>
+                    
+                    @if (User.IsInRole(Constants.Roles.DoctorRoleName))
+                    {
+                        <td>Add</td>
+                        <td>Edit</td>
+                    }
+                    <td>Cancel</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="h4 text-muted">There aren't any visits.</p>
+    }
+</div>

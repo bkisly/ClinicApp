@@ -10,7 +10,7 @@ namespace ClinicApp.Infrastructure
     {
         public static void PopulateSpecialities(ISpecialityRepository specialityRepository)
         {
-            if (specialityRepository.Specialities.ToList().Any())
+            if (specialityRepository.Specialities.ToList().Count != 0)
                 return;
 
             foreach (var speciality in GetSpecialities())

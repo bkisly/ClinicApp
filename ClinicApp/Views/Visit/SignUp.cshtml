@@ -5,7 +5,7 @@
 
 <div class="container py-3 text-center">
     <h1 class="display-4 mb-3">@ViewData["Title"]</h1>
-    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">Back</a>
+    <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary rounded-pill">Back</a>
     
     @if (Model is { PatientId: not null, IsActivated: true })
     {
@@ -22,7 +22,7 @@
                                 @foreach (var dateTime in group)
                                 {
                                     <div class="col">
-                                        <form asp-action="Visit" method="post">
+                                        <form asp-action="SignUp" method="post">
                                             <input type="hidden" asp-for="PatientId" value="@Model.PatientId"/>
                                             <input type="hidden" asp-for="DoctorId" value="@Model.DoctorId"/>
                                             <input type="hidden" asp-for="Date" value="@dateTime"/>

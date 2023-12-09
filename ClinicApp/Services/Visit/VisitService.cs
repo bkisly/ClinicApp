@@ -30,6 +30,22 @@ namespace ClinicApp.Services.Visit
             return allDates.Except(takenDates.AsEnumerable());
         }
 
+        public async Task<IList<Models.Visit>> FindByPatientId(string patientId)
+            => await visitRepository.Visits
+                .Include(v => v.Patient)
+                .Include(v => v.Doctor)
+                .Include(v => v.VisitStatus)
+                .Where(v => v.PatientId == patientId)
+                .ToListAsync();
+
+        public async Task<IList<Models.Visit>> FindByDoctorId(string doctorId)
+            => await visitRepository.Visits
+                .Include(v => v.Patient)
+                .Include(v => v.Doctor)
+                .Include(v => v.VisitStatus)
+                .Where(v => v.DoctorId == doctorId)
+                .ToListAsync();
+
         public async Task AddAsync(Models.Visit visit)
         {
             await visitRepository.AddAsync(visit);
