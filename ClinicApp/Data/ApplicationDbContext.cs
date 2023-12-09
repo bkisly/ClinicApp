@@ -9,7 +9,9 @@ namespace ClinicApp.Data
     {
         public virtual DbSet<Speciality> Specialities => Set<Speciality>();
         public virtual DbSet<ScheduleEntry> ScheduleEntries => Set<ScheduleEntry>();
+
         public virtual DbSet<Visit> Visits => Set<Visit>();
+        public virtual DbSet<VisitStatus> VisitsStatus => Set<VisitStatus>();
 
         public virtual DbSet<Doctor> Doctors => Set<Doctor>();
         public virtual DbSet<Patient> Patients => Set<Patient>();
