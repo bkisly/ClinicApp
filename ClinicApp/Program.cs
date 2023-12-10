@@ -33,6 +33,8 @@ builder.Services.AddIdentityCore<Patient>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 

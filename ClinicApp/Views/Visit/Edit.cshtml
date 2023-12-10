@@ -1,0 +1,25 @@
+﻿@model VisitDto
+@{
+    ViewData["Title"] = "Edit description of a visit";
+}
+
+<div class="container text-center py-3">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill mb-3">Back</a>
+    <div class="text-start text-danger" asp-validation-summary="All"></div>
+
+    <form asp-action="Edit" class="" method="post">
+        <div class="form-floating text-start mb-3">
+            <input class="form-control" asp-for="Description" placeholder="Description"/>
+            <label asp-for="@Model.Description" class="form-label">Description</label>
+
+            <input type="hidden" asp-for="@Model.Id"/>
+            <input type="hidden" asp-for="@Model.DoctorId"/>
+            <input type="hidden" asp-for="@Model.PatientId"/>
+            <input type="hidden" asp-for="@Model.VisitStatusId"/>
+            <input type="hidden" asp-for="@Model.Date"/>
+        </div>
+
+        <button class="btn btn-outline-primary justify-content-center rounded-pill" type="submit">Submit</button>
+    </form>
+</div>

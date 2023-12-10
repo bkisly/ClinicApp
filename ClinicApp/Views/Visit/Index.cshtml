@@ -18,7 +18,7 @@
                 <th>Status</th>
                 @if (User.IsInRole(Constants.Roles.DoctorRoleName))
                 {
-                    <th>Add description</th>
+                    <th>Edit description</th>
                     <th>Mark as finished</th>
                 }
                 <th>Cancel</th>
@@ -35,8 +35,8 @@
                     
                     @if (User.IsInRole(Constants.Roles.DoctorRoleName))
                     {
-                        <td>Add</td>
-                        <td>Edit</td>
+                        <td><a asp-action="Edit" asp-route-id="@visit.Id" class="btn btn-outline-primary rounded-pill">Edit</a></td>
+                        <td>Complete</td>
                     }
                     <td>Cancel</td>
                 </tr>

@@ -1,6 +1,8 @@
-﻿using ClinicApp.Infrastructure;
+﻿using AutoMapper;
+using ClinicApp.Infrastructure;
 using ClinicApp.Models.Users;
 using ClinicApp.Models;
+using ClinicApp.Models.Dto;
 using ClinicApp.Services.Schedule;
 using ClinicApp.Services.User;
 using ClinicApp.Services.Visit;
@@ -10,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicApp.Controllers
 {
-    public class VisitController(IUserDependenciesProvider provider, IVisitService visitService, IScheduleService scheduleService) : Controller
+    public class VisitController(IUserDependenciesProvider provider, IVisitService visitService, IScheduleService scheduleService, IMapper mapper) : Controller
     {
         [Authorize(Roles = $"{Constants.Roles.PatientRoleName},{Constants.Roles.DoctorRoleName}")]
         public async Task<IActionResult> Index()
@@ -81,6 +83,27 @@ namespace ClinicApp.Controllers
                 ModelState.AddModelError("", e.Message);
                 return View(model);
             }
+        }
+
+        [Authorize(Roles = Constants.Roles.DoctorRoleName)]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var visit = await visitService.FindByIdAsync(id);
+
+            if (visit == null)
+                return NotFound();
+
+            return View(mapper.Map<VisitDto>(visit));
+        }
+
+        [HttpPost, Authorize(Roles = Constants.Roles.DoctorRoleName), ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(VisitDto visit)
+        {
+            if (!ModelState.IsValid)
+                return View(visit);
+
+            await visitService.UpdateAsync(visit.Id, mapper.Map<Visit>(visit));
+            return RedirectToAction(nameof(Index));
         }
     }
 }

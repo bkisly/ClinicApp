@@ -1,6 +1,8 @@
-﻿using ClinicApp.Infrastructure;
+﻿using System.Text.Json.Serialization;
+using ClinicApp.Infrastructure;
 using ClinicApp.Models.Users;
 using ClinicApp.Models.ValidationAttributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ClinicApp.Models
 {

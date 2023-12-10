@@ -50,5 +50,8 @@ namespace ClinicApp.Services.Visit
         {
             await visitRepository.AddAsync(visit);
         }
+
+        public async Task UpdateAsync(int visitId, Models.Visit entity) => await visitRepository.UpdateAsync(visitId, entity);
+        public async Task<Models.Visit?> FindByIdAsync(int id) => await visitRepository.FindByIdAsync(id);
     }
 }
