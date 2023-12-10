@@ -10,7 +10,7 @@
     <title>@ViewData["Title"] - Clinic App</title>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Trackmeal.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ClinicApp.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -32,6 +32,12 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="Manage" asp-controller="Home" asp-action="Index">Manage</a>
+                            </li>
+                        }
+                        else if (User.IsInRole(Constants.Roles.PatientRoleName) || User.IsInRole(Constants.Roles.DoctorRoleName))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Visit" asp-action="Index">View visits</a>
                             </li>
                         }
                     </ul>

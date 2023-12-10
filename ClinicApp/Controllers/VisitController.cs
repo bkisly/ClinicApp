@@ -105,5 +105,16 @@ namespace ClinicApp.Controllers
             await visitService.UpdateAsync(visit.Id, mapper.Map<Visit>(visit));
             return RedirectToAction(nameof(Index));
         }
+
+        [Authorize(Roles = Constants.Roles.PatientRoleName)]
+        public async Task<IActionResult> Description(int id)
+        {
+            var visit = await visitService.FindByIdAsync(id);
+
+            if (visit == null)
+                return NotFound();
+
+            return View(nameof(Description), visit.Description);
+        }
     }
 }

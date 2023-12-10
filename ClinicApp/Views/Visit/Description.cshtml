@@ -1,0 +1,13 @@
+﻿@model string?
+@{
+    ViewData["Title"] = "View description";
+    var content = Model ?? "The doctor hasn't added a description to this visit yet.";
+    var contentClass = Model != null ? "text-start" : "h4 text-muted";
+}
+
+<div class="container text-center py-3">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill mb-3">Back</a>
+    
+    <p class="@contentClass">@content</p>
+</div>

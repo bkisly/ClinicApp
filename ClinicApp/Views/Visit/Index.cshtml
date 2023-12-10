@@ -21,6 +21,10 @@
                     <th>Edit description</th>
                     <th>Mark as finished</th>
                 }
+                else
+                {
+                    <th>View description</th>
+                }
                 <th>Cancel</th>
             </tr>
             </thead>
@@ -37,6 +41,10 @@
                     {
                         <td><a asp-action="Edit" asp-route-id="@visit.Id" class="btn btn-outline-primary rounded-pill">Edit</a></td>
                         <td>Complete</td>
+                    }
+                    else
+                    {
+                        <td><a asp-action="Description" asp-route-id="@visit.Id" class="btn btn-outline-primary rounded-pill">View</a></td>
                     }
                     <td>Cancel</td>
                 </tr>
