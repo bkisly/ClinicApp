@@ -42,6 +42,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/User/Login";
     options.LogoutPath = "/User/Logout";
+    options.AccessDeniedPath = "/Error/403";
 });
 
 // Add repositories
@@ -72,6 +73,7 @@ app.MapAreaControllerRoute(
     name: "ManageArea",
     areaName: Constants.Areas.ManageAreaName,
     pattern: Constants.Areas.ManageAreaName + "/{controller=Home}/{action=Index}/{id?}");
+
 app.MapDefaultControllerRoute();
 
 using (var scope = app.Services.CreateScope())
