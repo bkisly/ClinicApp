@@ -25,7 +25,7 @@ namespace ClinicApp.Controllers
             else if (User.IsInRole(Constants.Roles.DoctorRoleName))
                 visits.AddRange(await visitService.FindByDoctorId(id ?? ""));
 
-            return View(visits);
+            return View(new VisitListViewModel { Visits = visits });
         }
 
         [Authorize(Roles = Constants.Roles.PatientRoleName)]
@@ -115,6 +115,34 @@ namespace ClinicApp.Controllers
                 return NotFound();
 
             return View(nameof(Description), visit.Description);
+        }
+
+        [Authorize(Roles = Constants.Roles.DoctorRoleName), HttpPost]
+        public async Task<IActionResult> Complete(int selectedVisitId)
+        {
+            try
+            {
+                await visitService.SetStatusAsync(selectedVisitId, VisitStatusEnum.Finished);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
+        }
+
+        [Authorize(Roles = $"{Constants.Roles.PatientRoleName},{Constants.Roles.DoctorRoleName}"), HttpPost]
+        public async Task<IActionResult> Cancel(int selectedVisitId)
+        {
+            try
+            {
+                await visitService.SetStatusAsync(selectedVisitId, VisitStatusEnum.Cancelled);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
         }
     }
 }

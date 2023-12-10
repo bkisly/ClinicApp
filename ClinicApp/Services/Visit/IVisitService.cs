@@ -10,5 +10,6 @@ namespace ClinicApp.Services.Visit
         Task AddAsync(Models.Visit visit);
         Task UpdateAsync(int visitId, Models.Visit entity);
         Task<Models.Visit?> FindByIdAsync(int id);
+        Task SetStatusAsync(int visitId, VisitStatusEnum statusId);
     }
 }

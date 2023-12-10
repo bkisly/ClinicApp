@@ -12,7 +12,7 @@ namespace ClinicApp.Services.Visit
             var allDates = new List<DateTime>();
             var takenDates = visitRepository.Visits
                 .Include(v => v.Doctor)
-                .Where(v => v.Doctor.Id == entry.DoctorId)
+                .Where(v => v.Doctor.Id == entry.DoctorId && v.VisitStatusId == (byte)VisitStatusEnum.SignedUp)
                 .AsEnumerable()
                 .Where(v => DateOnly.FromDateTime(v.Date) == entry.Date)
                 .Where(v => TimeOnly.FromDateTime(v.Date) >= entry.Begin)
@@ -46,12 +46,17 @@ namespace ClinicApp.Services.Visit
                 .Where(v => v.DoctorId == doctorId)
                 .ToListAsync();
 
-        public async Task AddAsync(Models.Visit visit)
-        {
-            await visitRepository.AddAsync(visit);
-        }
-
+        public async Task AddAsync(Models.Visit visit) => await visitRepository.AddAsync(visit);
         public async Task UpdateAsync(int visitId, Models.Visit entity) => await visitRepository.UpdateAsync(visitId, entity);
         public async Task<Models.Visit?> FindByIdAsync(int id) => await visitRepository.FindByIdAsync(id);
+
+        public async Task SetStatusAsync(int visitId, VisitStatusEnum statusId)
+        {
+            var visit = await visitRepository.FindByIdAsync(visitId) 
+                        ?? throw new InvalidOperationException($"Visit with ID {visitId} not found.");
+
+            visit.VisitStatusId = (byte)statusId;
+            await visitRepository.UpdateAsync(visitId, visit);
+        }
     }
 }

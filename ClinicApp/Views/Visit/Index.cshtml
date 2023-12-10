@@ -1,5 +1,5 @@
 ﻿@using ClinicApp.Infrastructure
-@model IEnumerable<Visit>
+@model VisitListViewModel
 @{
     ViewData["Title"] = "View visits";
 }
@@ -7,7 +7,7 @@
 <div class="container py-3 text-center">
     <h1 class="display-4">@ViewData["Title"]</h1>
     
-    @if(Model.Any())
+    @if(Model.Visits.Any())
     {
         <table class="table table-borderless table-striped table-hover">
             <thead>
@@ -29,7 +29,7 @@
             </tr>
             </thead>
             <tbody>
-            @foreach (var visit in Model)
+            @foreach (var visit in Model.Visits)
             {
                 <tr>
                     <td>@visit.Date</td>
@@ -40,13 +40,23 @@
                     @if (User.IsInRole(Constants.Roles.DoctorRoleName))
                     {
                         <td><a asp-action="Edit" asp-route-id="@visit.Id" class="btn btn-outline-primary rounded-pill">Edit</a></td>
-                        <td>Complete</td>
+                        <td>
+                            <form asp-action="Complete" method="post">
+                                <input type="hidden" asp-for="@Model.SelectedVisitId" value="@visit.Id" />
+                                <button class="btn btn-outline-success rounded-pill" type="submit">Complete</button>
+                            </form>
+                        </td>
                     }
                     else
                     {
                         <td><a asp-action="Description" asp-route-id="@visit.Id" class="btn btn-outline-primary rounded-pill">View</a></td>
                     }
-                    <td>Cancel</td>
+                    <td>
+                        <form asp-action="Cancel" method="post">
+                            <input type="hidden" asp-for="@Model.SelectedVisitId" value="@visit.Id"/>
+                            <button class="btn btn-outline-danger rounded-pill" type="submit">Cancel</button>
+                        </form>
+                    </td>
                 </tr>
             }
             </tbody>
