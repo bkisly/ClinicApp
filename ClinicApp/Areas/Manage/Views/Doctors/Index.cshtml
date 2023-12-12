@@ -19,6 +19,7 @@
                 <th>User name</th>
                 <th>Specialty</th>
                 <th>Edit schedule</th>
+                <th>View visits report</th>
             </tr>
             </thead>
             <tbody>
@@ -31,6 +32,9 @@
                         <a asp-area="Manage" asp-controller="Schedule" asp-action="Index" 
                            asp-route-weekNumber="@DateOnly.FromDateTime(DateTime.Now).WeekNumber()" asp-route-id="@doctor.Id"
                            class="btn btn-outline-secondary rounded-pill">View schedule</a>
+                    </td>
+                    <td>
+                        <a asp-action="Report" asp-route-doctorId="@doctor.Id" class="btn btn-outline-primary rounded-pill">View report</a>
                     </td>
                 </tr>
             }
