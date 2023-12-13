@@ -18,27 +18,32 @@ namespace ClinicApp.Tests
                 new()
                 {
                     Date = new DateTime(2023, 12, 7, 13, 45, 0),
-                    Doctor = new Doctor { Id = "abcde" }
+                    Doctor = new Doctor { Id = "abcde" }, VisitStatusId = (byte)VisitStatusEnum.Cancelled
                 },
                 new()
                 {
                     Date = new DateTime(2023, 12, 7, 13, 45, 0),
-                    Doctor = new Doctor { Id = "abcdef" }
+                    Doctor = new Doctor { Id = "abcdef" }, VisitStatusId = (byte)VisitStatusEnum.SignedUp
+                },
+                new()
+                {
+                    Date = new DateTime(2023, 12, 7, 14, 0, 0),
+                    Doctor = new Doctor { Id = "abcde" }, VisitStatusId = (byte)VisitStatusEnum.SignedUp
                 },
                 new()
                 {
                     Date = new DateTime(2023, 12, 7, 12, 45, 0),
-                    Doctor = new Doctor { Id = "abcde" }
+                    Doctor = new Doctor { Id = "abcde" }, VisitStatusId = (byte)VisitStatusEnum.Finished
                 },
                 new()
                 {
                     Date = new DateTime(2023, 12, 8, 12, 45, 0),
-                    Doctor = new Doctor { Id = "abcde" }
+                    Doctor = new Doctor { Id = "abcde" }, VisitStatusId = (byte)VisitStatusEnum.SignedUp
                 },
                 new()
                 {
                     Date = new DateTime(2023, 12, 7, 15, 0, 0),
-                    Doctor = new Doctor { Id = "abcde" }
+                    Doctor = new Doctor { Id = "abcde" }, VisitStatusId = (byte)VisitStatusEnum.SignedUp
                 },
             };
             var entry = new ScheduleEntry
@@ -60,7 +65,7 @@ namespace ClinicApp.Tests
 
             // Assert
 
-            Assert.Equal(7, availableDates.Count());
+            Assert.Equal(8, availableDates.Count());
         }
     }
 }
