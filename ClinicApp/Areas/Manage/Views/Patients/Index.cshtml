@@ -16,7 +16,7 @@
                 <tr>
                     <th>User name</th>
                     <th>Is activated?</th>
-                    <th>Activate</th>
+                    <th>Activation</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +28,7 @@
                         <td>
                             <form asp-action="Activate" method="post">
                                 <input asp-for="SelectedPatientId" type="hidden" value="@patient.Id"/>
-                                <button type="submit" class="btn btn-outline-success rounded-pill">Activate account</button>
+                                <button type="submit" class="btn btn-outline-success rounded-pill">Switch activation</button>
                             </form>
                         </td>
                     </tr>

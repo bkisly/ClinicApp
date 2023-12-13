@@ -26,7 +26,7 @@ namespace ClinicApp.Areas.Manage.Controllers
         {
             try
             {
-                await userService.ActivatePatient(viewModel.SelectedPatientId);
+                await userService.SwitchPatientActivation(viewModel.SelectedPatientId);
                 return View(nameof(Index), DefaultViewModel);
             }
             catch (NullReferenceException)

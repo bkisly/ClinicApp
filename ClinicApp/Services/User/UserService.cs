@@ -5,14 +5,14 @@ namespace ClinicApp.Services.User
 {
     public class UserService(IUserDependenciesProvider userDependenciesProvider) : IUserService
     {
-        public async Task ActivatePatient(string patientId)
+        public async Task SwitchPatientActivation(string patientId)
         {
             var mgr = userDependenciesProvider.ProvideManager<Patient>();
             var patient = await mgr.FindByIdAsync(patientId);
 
             if (patient != null)
             {
-                patient.IsActivated = true;
+                patient.IsActivated ^= true;
                 await mgr.UpdateAsync(patient);
             }
             else throw new NullReferenceException($"Patient with ID {patientId} not found.");
