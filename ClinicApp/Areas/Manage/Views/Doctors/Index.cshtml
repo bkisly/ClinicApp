@@ -17,6 +17,7 @@
             <thead>
             <tr>
                 <th>User name</th>
+                <th>Full name</th>
                 <th>Specialty</th>
                 <th>Edit schedule</th>
                 <th>View visits report</th>
@@ -27,6 +28,7 @@
             {
                 <tr>
                     <td>@doctor.UserName</td>
+                    <td>@(string.IsNullOrEmpty(doctor.FirstName) ? "Not available" : $"{doctor.FirstName} {doctor.LastName}")</td>
                     <td>@doctor.Speciality.Name</td>
                     <td>
                         <a asp-area="Manage" asp-controller="Schedule" asp-action="Index" 

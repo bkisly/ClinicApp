@@ -1,4 +1,5 @@
 ﻿@using ClinicApp.Infrastructure
+@using ClinicApp.Models.Users
 @model VisitListViewModel
 @{
     ViewData["Title"] = "View visits";
@@ -33,8 +34,8 @@
             {
                 <tr>
                     <td>@visit.Date</td>
-                    <td>@visit.Patient.UserName</td>
-                    <td>@visit.Doctor.UserName</td>
+                    <td>@visit.Patient.DisplayName</td>
+                    <td>@visit.Doctor.DisplayName</td>
                     <td>@visit.VisitStatus.Name</td>
                     
                     @if (User.IsInRole(Constants.Roles.DoctorRoleName))

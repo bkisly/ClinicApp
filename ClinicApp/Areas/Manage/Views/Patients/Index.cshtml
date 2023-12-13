@@ -15,6 +15,7 @@
             <thead>
                 <tr>
                     <th>User name</th>
+                    <th>Full name</th>
                     <th>Is activated?</th>
                     <th>Activation</th>
                 </tr>
@@ -24,6 +25,7 @@
                 {
                     <tr>
                         <td>@patient.UserName</td>
+                        <td>@(string.IsNullOrEmpty(patient.FirstName) ? "Not available" : $"{patient.FirstName} {patient.LastName}")</td>
                         <td>@(patient.IsActivated ? "Yes" : "No")</td>
                         <td>
                             <form asp-action="Activate" method="post">

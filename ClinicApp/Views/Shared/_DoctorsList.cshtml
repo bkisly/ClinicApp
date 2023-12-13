@@ -7,7 +7,7 @@
         {
             <div class="card my-2">
                 <div class="card-body">
-                    <p class="h4">@doctor.UserName</p>
+                    <p class="h4">@doctor.DisplayName</p>
                     <p>@doctor.Speciality.Name</p>
                     <a asp-controller="Visit" asp-action="SignUp" asp-route-doctorId="@doctor.Id" 
                        class="btn btn-outline-primary rounded-pill">Sign up for a visit...</a>
