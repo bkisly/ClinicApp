@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace ClinicApp.Models.Users
+﻿namespace ClinicApp.Models.Users
 {
-    public class Doctor : IdentityUser
+    public class Doctor : NamedAccount
     {
         public Speciality Speciality { get; set; } = null!;
     }

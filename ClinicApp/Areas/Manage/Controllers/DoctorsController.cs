@@ -39,7 +39,14 @@ namespace ClinicApp.Areas.Manage.Controllers
             }
 
             var speciality = specialityRepository.GetById(viewModel.SpecialityId);
-            var doctor = new Doctor { UserName = viewModel.UserName, Speciality = speciality };
+            var doctor = new Doctor
+            {
+                UserName = viewModel.UserName, 
+                Speciality = speciality, 
+                FirstName = viewModel.FirstName,
+                LastName = viewModel.LastName
+            };
+
             var result = await registrationService.RegisterAsync(doctor, viewModel.Password);
 
             if (result.Succeeded)

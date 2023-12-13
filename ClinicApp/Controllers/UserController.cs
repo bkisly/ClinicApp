@@ -54,7 +54,13 @@ namespace ClinicApp.Controllers
                     return View(registrationViewModel);
                 }
 
-                var patient = new Patient { UserName = registrationViewModel.UserName };
+                var patient = new Patient
+                {
+                    UserName = registrationViewModel.UserName, 
+                    FirstName = registrationViewModel.FirstName,
+                    LastName = registrationViewModel.LastName
+                };
+
                 var result = await _registrationService.RegisterAsync(patient, registrationViewModel.Password);
 
                 if (result.Succeeded)
