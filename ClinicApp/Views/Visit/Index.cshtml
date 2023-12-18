@@ -55,7 +55,14 @@
                     <td>
                         <form asp-action="Cancel" method="post">
                             <input type="hidden" asp-for="@Model.SelectedVisitId" value="@visit.Id"/>
-                            <button class="btn btn-outline-danger rounded-pill" type="submit">Cancel</button>
+                            @if (visit.VisitStatusId == (byte)VisitStatusEnum.Finished)
+                            {
+                                <button class="btn btn-outline-danger rounded-pill" type="submit" disabled>Cancel</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-danger rounded-pill" type="submit">Cancel</button>
+                            }
                         </form>
                     </td>
                 </tr>

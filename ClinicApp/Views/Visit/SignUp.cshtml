@@ -7,6 +7,8 @@
     <h1 class="display-4 mb-3">@ViewData["Title"]</h1>
     <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary rounded-pill">Back</a>
     
+    <div asp-validation-summary="All" class="text-start text-danger"></div>
+
     @if (Model is { PatientId: not null, IsActivated: true })
     {
         @if (Model.AvailableVisits != null && Model.AvailableVisits.Any())
@@ -26,6 +28,7 @@
                                             <input type="hidden" asp-for="PatientId" value="@Model.PatientId"/>
                                             <input type="hidden" asp-for="DoctorId" value="@Model.DoctorId"/>
                                             <input type="hidden" asp-for="Date" value="@dateTime"/>
+                                            <input type="hidden" asp-for="IsActivated" value="@Model.IsActivated"/>
                                             <button class="btn btn-sm btn-outline-success rounded-pill" type="submit">@dateTime.ToShortTimeString()</button>
                                         </form>
                                     </div>

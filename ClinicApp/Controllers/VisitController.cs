@@ -39,22 +39,13 @@ namespace ClinicApp.Controllers
             if (doctor == null)
                 return NotFound();
 
-            var availableVisits = new List<DateTime>();
-            var scheduleEntries = (await scheduleService.GetEntriesByDoctor(doctorId))
-                .ToArray();
-
-            foreach (var entry in scheduleEntries)
-                availableVisits.AddRange(visitService.GetAvailableDatesForScheduleEntry(entry)
-                    .Where(d => d >= DateTime.Now)
-                    .OrderBy(d => d));
-
             var patient = await provider.ProvideManager<Patient>().GetUserAsync(User);
 
             return View(new VisitViewModel
             {
                 PatientId = patient?.Id,
                 DoctorId = doctor.Id,
-                AvailableVisits = availableVisits,
+                AvailableVisits = await GetAvailableVisitDates(doctorId),
                 IsActivated = patient?.IsActivated ?? false
             });
         }
@@ -81,6 +72,7 @@ namespace ClinicApp.Controllers
             catch (Exception e)
             {
                 ModelState.AddModelError("", e.Message);
+                model.AvailableVisits = await GetAvailableVisitDates(model.DoctorId);
                 return View(model);
             }
         }
@@ -143,6 +135,20 @@ namespace ClinicApp.Controllers
             {
                 return NotFound();
             }
+        }
+
+        private async Task<IEnumerable<DateTime>> GetAvailableVisitDates(string doctorId)
+        {
+            var availableVisits = new List<DateTime>();
+            var scheduleEntries = (await scheduleService.GetEntriesByDoctor(doctorId))
+                .ToArray();
+
+            foreach (var entry in scheduleEntries)
+                availableVisits.AddRange(visitService.GetAvailableDatesForScheduleEntry(entry)
+                    .Where(d => d >= DateTime.Now)
+                    .OrderBy(d => d));
+
+            return availableVisits;
         }
     }
 }
