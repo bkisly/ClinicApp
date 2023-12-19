@@ -1,7 +1,9 @@
-﻿namespace ClinicApp.Infrastructure.Exceptions
+﻿using ClinicApp.Models;
+
+namespace ClinicApp.Infrastructure.Exceptions
 {
-    public class VisitConcurrencyException(string message, byte[]? dbRowVersion = null) : Exception(message)
+    public class VisitConcurrencyException(string message, Visit? dbRowVersion = null) : Exception(message)
     {
-        public byte[]? DbRowVersion { get; set; } = dbRowVersion;
+        public Visit? DbEntity { get; set; } = dbRowVersion;
     }
 }

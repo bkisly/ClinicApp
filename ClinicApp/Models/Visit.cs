@@ -32,6 +32,7 @@ namespace ClinicApp.Models
             obj.DoctorId = DoctorId;
             obj.VisitStatusId = VisitStatusId;
             obj.VisitStatus = VisitStatus;
+            obj.RowVersion = RowVersion;
         }
     }
 }

@@ -10,6 +10,7 @@ using ClinicApp.Services.Visit;
 using ClinicApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ClinicApp.Controllers
 {
@@ -102,11 +103,10 @@ namespace ClinicApp.Controllers
             }
             catch (VisitConcurrencyException e)
             {
-                ModelState.AddModelError("", e.Message);
-                
-                if(e.DbRowVersion != null)
-                    visit.RowVersion = e.DbRowVersion;
+                if(e.DbEntity != null)
+                    visit = mapper.Map<VisitDto>(e.DbEntity);
 
+                ModelState.AddModelError("", e.Message);
                 return View(visit);
             }
         }

@@ -77,7 +77,7 @@ namespace ClinicApp.Services.Visit
                 if (visit.Description != clientEntity.Description)
                     throw new VisitConcurrencyException(
                         $"Unable to edit given visit. The description of the following entry has been modified by another user. Current value: {visit.Description}",
-                        visit.RowVersion);
+                        visit);
 
                 throw;
             }
