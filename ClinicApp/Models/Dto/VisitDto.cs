@@ -8,5 +8,6 @@
         public string PatientId { get; set; } = string.Empty;
         public string DoctorId { get; set; } = string.Empty;
         public byte VisitStatusId { get; set; }
+        public byte[] RowVersion { get; set; } = null!;
     }
 }

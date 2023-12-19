@@ -19,6 +19,7 @@ namespace ClinicApp.Repositories
         {
             var visitToEdit = await context.Visits.SingleAsync(v => v.Id == id);
             entity.CopyTo(visitToEdit);
+            context.Entry(visitToEdit).Property(nameof(Visit.RowVersion)).OriginalValue = entity.RowVersion;
             await context.SaveChangesAsync();
         }
 

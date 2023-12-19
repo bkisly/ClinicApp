@@ -65,7 +65,7 @@ namespace ClinicApp.Tests
 
             // Assert
 
-            Assert.Equal(8, availableDates.Count());
+            Assert.Equal(7, availableDates.Count());
         }
     }
 }

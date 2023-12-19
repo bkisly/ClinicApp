@@ -1,8 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using ClinicApp.Models.Users;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-
-namespace ClinicApp.ViewModels
+﻿namespace ClinicApp.ViewModels
 {
     public class VisitViewModel
     {

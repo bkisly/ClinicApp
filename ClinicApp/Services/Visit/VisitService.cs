@@ -1,4 +1,5 @@
 ﻿using ClinicApp.Infrastructure;
+using ClinicApp.Infrastructure.Exceptions;
 using ClinicApp.Models;
 using ClinicApp.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -57,7 +58,30 @@ namespace ClinicApp.Services.Visit
 
             await visitRepository.AddAsync(visit);
         }
-        public async Task UpdateAsync(int visitId, Models.Visit entity) => await visitRepository.UpdateAsync(visitId, entity);
+
+        public async Task UpdateAsync(int visitId, Models.Visit entity)
+        {
+            try
+            {
+                await visitRepository.UpdateAsync(visitId, entity);
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                var exceptionEntry = e.Entries.Single();
+                var clientEntity = (Models.Visit)exceptionEntry.Entity;
+                var dbEntity = await exceptionEntry.GetDatabaseValuesAsync() ?? throw new VisitConcurrencyException(
+                        "Unable to edit given visit. The following entry was deleted by another user.");
+
+                var visit = (Models.Visit)dbEntity.ToObject();
+
+                if (visit.Description != clientEntity.Description)
+                    throw new VisitConcurrencyException(
+                        $"Unable to edit given visit. The description of the following entry has been modified by another user. Current value: {visit.Description}",
+                        visit.RowVersion);
+
+                throw;
+            }
+        }
         public async Task<Models.Visit?> FindByIdAsync(int id) => await visitRepository.FindByIdAsync(id);
 
         public async Task SetStatusAsync(int visitId, VisitStatusEnum statusId)

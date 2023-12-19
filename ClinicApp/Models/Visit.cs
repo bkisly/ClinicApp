@@ -1,8 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 using ClinicApp.Infrastructure;
 using ClinicApp.Models.Users;
 using ClinicApp.Models.ValidationAttributes;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ClinicApp.Models
 {
@@ -20,6 +19,8 @@ namespace ClinicApp.Models
 
         public byte VisitStatusId { get; set; }
         public VisitStatus VisitStatus { get; set; } = null!;
+
+        [Timestamp] public byte[] RowVersion { get; set; } = null!;
 
         public void CopyTo(Visit obj)
         {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ClinicApp.Infrastructure;
+using ClinicApp.Infrastructure.Exceptions;
 using ClinicApp.Models.Users;
 using ClinicApp.Models;
 using ClinicApp.Models.Dto;
@@ -94,8 +95,20 @@ namespace ClinicApp.Controllers
             if (!ModelState.IsValid)
                 return View(visit);
 
-            await visitService.UpdateAsync(visit.Id, mapper.Map<Visit>(visit));
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await visitService.UpdateAsync(visit.Id, mapper.Map<Visit>(visit));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (VisitConcurrencyException e)
+            {
+                ModelState.AddModelError("", e.Message);
+                
+                if(e.DbRowVersion != null)
+                    visit.RowVersion = e.DbRowVersion;
+
+                return View(visit);
+            }
         }
 
         [Authorize(Roles = Constants.Roles.PatientRoleName)]
