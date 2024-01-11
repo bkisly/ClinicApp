@@ -11,10 +11,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddMvc();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddServerSideBlazor();
 
 // Add identity
 builder.Services.AddDefaultIdentity<IdentityUser>()
@@ -76,6 +78,10 @@ app.MapAreaControllerRoute(
     pattern: Constants.Areas.ManageAreaName + "/{controller=Home}/{action=Index}/{id?}");
 
 app.MapDefaultControllerRoute();
+
+app.MapRazorPages();
+app.MapBlazorHub();
+app.MapFallbackToPage("/app/{*catchall}", "/Index");
 
 using (var scope = app.Services.CreateScope())
 {
