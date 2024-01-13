@@ -1,0 +1,14 @@
+﻿@page "/app/user/logout"
+@model ClinicApp.Pages.User.LogoutModel
+@{
+    ViewData["Title"] = "Logout";
+}
+
+<form id="logout-form" method="post">
+</form>
+
+<script>
+    (() => {
+        document.getElementById('logout-form').submit();
+    })()
+</script>

@@ -1,8 +1,92 @@
-﻿@inherits LayoutComponentBase
-@page "/app"
+﻿@using ClinicApp.Services.User
+@using Microsoft.AspNetCore.Components.Authorization
+@using ClinicApp.Infrastructure
+@using System.Security.Claims
+@inherits LayoutComponentBase
+@inject IIdentityAuthenticationService UserService
+@inject AuthenticationStateProvider AuthStateProvider
 
-<h3>AppLayout</h3>
+<PageTitle>Main page</PageTitle>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
+        <div class="container-fluid">
+            <NavLink class="navbar-brand" href="/app" Match="NavLinkMatch.Prefix">Clinic App</NavLink>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <NavLink class="nav-link text-dark" href="/app" Match="NavLinkMatch.Prefix">Home</NavLink>
+                    </li>
+                    @if (IsInRole(Constants.Roles.ManagerRoleName))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Manage" asp-controller="Home" asp-action="Index">Manage</a>
+                        </li>
+                    }
+                    else if (IsInRole(Constants.Roles.PatientRoleName) || IsInRole(Constants.Roles.DoctorRoleName))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Visit" asp-action="Index">View visits</a>
+                        </li>
+                    }
+                </ul>
+
+                <div class="justify-content-end text-dark">
+                    @if (UserService.IsSignedIn(User))
+                    {
+                        <div class="hstack">
+                            <span class="me-3">Logged in as: @User.Identity?.Name</span>
+                            <NavLink href="/app/user/logout" Match="NavLinkMatch.Prefix" class="nav-link">Log out</NavLink>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <NavLink class="nav-link text-dark" href="/app/user/login" Match="NavLinkMatch.Prefix">Log in</NavLink>
+                            </li>
+                            <li class="nav-item">
+                                <NavLink class="nav-link text-dark" href="/app/user/register" Match="NavLinkMatch.Prefix">Register</NavLink>
+                            </li>
+                        </ul>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </nav>
+</header>
+<main role="main">
+    @Body
+</main>
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; @DateTime.Now.Year - Clinic App
+    </div>
+</footer>
 
 @code {
+    protected ClaimsPrincipal User => GetUserAsync().Result;
 
+    protected async Task<ClaimsPrincipal> GetUserAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        return authState.User;
+    }
+
+    protected bool IsInRole(string roleName)
+    {
+        var user = GetUserAsync().Result;
+        return user.IsInRole(roleName);
+    }
+
+    protected void LogOut()
+    {
+        UserService.SignOut();
+    }
 }

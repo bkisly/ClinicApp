@@ -1,0 +1,26 @@
+﻿@page "/app/user/login"
+@model ClinicApp.Pages.User.LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container-sm p-4 text-center">
+    <h1 class="display-4">Log in</h1>
+    <p>Provide your credentials and log in.</p>
+
+    <div asp-validation-summary="All" class="text-start text-danger"></div>
+    
+    <form method="post" class="mt-3">
+        <div class="form-floating my-2">
+            <input asp-for="UserCredentials.UserName" class="form-control" placeholder="User name"/>
+            <label asp-for="UserCredentials.UserName">User name</label>
+        </div>
+        <div class="form-floating my-2">
+            <input asp-for="UserCredentials.Password" class="form-control" placeholder="Password" type="password" />
+            <label asp-for="UserCredentials.Password">Password</label>
+        </div>
+        
+        <button type="submit" class="btn btn-lg btn-outline-primary rounded-pill">Log in</button>
+    </form>
+</div>
