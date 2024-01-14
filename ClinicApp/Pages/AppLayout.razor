@@ -29,7 +29,7 @@
                     else if (IsInRole(Constants.Roles.PatientRoleName) || IsInRole(Constants.Roles.DoctorRoleName))
                     {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Visit" asp-action="Index">View visits</a>
+                            <NavLink class="nav-link text-dark" href="/app/visit" Match="NavLinkMatch.Prefix">View visits</NavLink>
                         </li>
                     }
                 </ul>

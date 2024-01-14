@@ -1,0 +1,128 @@
+﻿@page "/app/visit"
+@using Microsoft.AspNetCore.Components.Authorization
+@using ClinicApp.Infrastructure
+@using ClinicApp.Services.User
+@using ClinicApp.Services.Visit
+@using System.Security.Claims
+@inject IBlazorUserService BlazorUserService
+@inject IVisitService VisitService
+@inject IUserDependenciesProvider UserDependenciesProvider
+
+<div class="container py-3 text-center">
+    <CascadingAuthenticationState>
+        <AuthorizeView Roles="@($"{Constants.Roles.DoctorRoleName},{Constants.Roles.PatientRoleName}")">
+            <Authorized>
+                <h1 class="display-4">View visits</h1>
+
+                @if (Visits.Any())
+                {
+                    <table class="table table-borderless table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Patient name</th>
+                                <th>Doctor name</th>
+                                <th>Status</th>
+                                @if (User.IsInRole(Constants.Roles.DoctorRoleName))
+                                {
+                                    <th>Edit description</th>
+                                    <th>Mark as finished</th>
+                                }
+                                else
+                                {
+                                    <th>View description</th>
+                                }
+                                <th>Cancel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var visit in Visits)
+                            {
+                                <tr>
+                                    <td>@visit.Date</td>
+                                    <td>@visit.Patient.DisplayName</td>
+                                    <td>@visit.Doctor.DisplayName</td>
+                                    <td>@visit.VisitStatus.Name</td>
+
+                                    @if (User.IsInRole(Constants.Roles.DoctorRoleName))
+                                    {
+                                        <td><a asp-action="Edit" asp-route-id="@visit.Id" class="btn btn-outline-primary rounded-pill">Edit</a></td>
+                                        <td>
+                                            @*<form asp-action="Complete" method="post">
+                                <input type="hidden" asp-for="@Model.SelectedVisitId" value="@visit.Id" />
+                                <button class="btn btn-outline-success rounded-pill" type="submit">Complete</button>
+                                </form>*@
+
+                                            <button class="btn btn-outline-success rounded-pill" @onclick="@(() => CompleteVisit(visit.Id))">Complete</button>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td><a asp-action="Description" asp-route-id="@visit.Id" class="btn btn-outline-primary rounded-pill">View</a></td>
+                                    }
+                                    <td>
+                                        @*<form asp-action="Cancel" method="post">
+                                <input type="hidden" asp-for="@Model.SelectedVisitId" value="@visit.Id" />
+                                @if (visit.VisitStatusId == (byte)VisitStatusEnum.Finished)
+                                {
+                                <button class="btn btn-outline-danger rounded-pill" type="submit" disabled>Cancel</button>
+                                }
+                                else
+                                {
+                                <button class="btn btn-outline-danger rounded-pill" type="submit">Cancel</button>
+                                }
+                                </form>*@
+
+                                        @if (visit.VisitStatusId == (byte)VisitStatusEnum.Finished)
+                                        {
+                                            <button class="btn btn-outline-danger rounded-pill" disabled>Cancel</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-outline-danger rounded-pill" @onclick="@(() => CancelVisit(visit.Id))">Cancel</button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="h4 text-muted">There aren't any visits.</p>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <p class="text-danger">Access denied.</p>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
+</div>
+
+@code {
+
+    protected List<Visit> Visits { get; set; } = new();
+
+    protected ClaimsPrincipal User => BlazorUserService.User;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Visits.Clear();
+        var id = UserDependenciesProvider.DefaultManager.GetUserId(User);
+
+        if(User.IsInRole(Constants.Roles.PatientRoleName))
+            Visits.AddRange(await VisitService.FindByPatientId(id ?? ""));
+        else if(User.IsInRole(Constants.Roles.DoctorRoleName))
+            Visits.AddRange(await VisitService.FindByDoctorId(id ?? ""));
+    }
+
+    protected void CompleteVisit(int visitId)
+    {
+
+    }
+
+    protected void CancelVisit(int visitId)
+    {
+
+    }
+}
