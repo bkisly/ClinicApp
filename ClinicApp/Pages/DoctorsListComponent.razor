@@ -1,0 +1,26 @@
+﻿@using ClinicApp.Models.Users
+
+<div class="text-start my-3">
+    @if (Doctors.Any())
+    {
+        @foreach (var doctor in Doctors)
+        {
+            <div class="card my-2">
+                <div class="card-body">
+                    <p class="h4">@doctor.DisplayName</p>
+                    <p>@doctor.Speciality.Name</p>
+                    <NavLink Match="NavLinkMatch.All" href="#" class="btn btn-outline-primary rounded-pill">Sign up for a visit...</NavLink>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-muted h4 text-center">There aren't any registered doctors.</p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<Doctor> Doctors { get; set; } = null!;
+}

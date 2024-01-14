@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <Folder Include="Areas\Manage\Views\Shared\" />
+    <Folder Include="Pages\Index\" />
+    <Folder Include="Pages\Shared\" />
   </ItemGroup>
 
 </Project>

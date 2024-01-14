@@ -64,6 +64,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
 builder.Services.AddScoped<IVisitsReportService, VisitsReportService>();
+builder.Services.AddScoped<IBlazorUserService, BlazorUserService>();
 
 var app = builder.Build();
 

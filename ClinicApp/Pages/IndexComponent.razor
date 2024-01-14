@@ -1,0 +1,107 @@
+﻿@page "/app/{Speciality:int?}"
+@page "/app/index/{Speciality:int?}"
+@using ClinicApp.ViewModels
+@using ClinicApp.Services.User
+@using ClinicApp.Models.Users
+@using ClinicApp.Repositories
+@using ClinicApp.Infrastructure
+@using Microsoft.AspNetCore.Identity
+@inherits OwningComponentBase<ClinicApp.Services.User.IUserDependenciesProvider>
+
+<div class="container py-3 text-center">
+<h1 class="display-3">Clinic App</h1>
+<p>Patients are our priority</p>
+    
+@switch (Model.RoleName)
+{
+    case Constants.Roles.PatientRoleName:
+    {
+        <div class="my-3">
+            <p class="text-start mb-2">Search by specialty:</p>
+
+            <div class="hstack">
+                <InputSelect @bind-Value="SelectedSpeciality" class="form-select">
+                    <option value="0">All</option>
+                    @foreach (var speciality in Model.Specialities)
+                    {
+                        <option value="@speciality.Id">@speciality.Name</option>
+                    }
+                </InputSelect>
+                <button class="btn btn-outline-primary rounded-pill mx-2" @onclick="@(FilterDoctors)">Search</button>
+            </div>
+        </div>
+
+
+        @if (!Model.IsActivated)
+        {
+            <p class="h6 text-danger">Currently your account is not activated, so you're not able to sign in for a visit to any doctor.
+                Please wait until a Manager activates your account.
+            </p>
+        }
+        
+        <DoctorsListComponent Doctors="Model.Doctors"/>
+        break;
+    }
+    case Constants.Roles.DoctorRoleName:
+        <p>Currently signed in as a Doctor.</p>
+        break;
+    case Constants.Roles.ManagerRoleName:
+        <p>Currently signed in as a Manager.</p>
+        break;
+    default:
+        @if (SignInManager.IsSignedIn(BlazorUserService.User))
+        {
+            <p>User signed in.</p>
+        }
+        else
+        {
+            <p>User not signed in.</p>
+        }
+        break;
+}
+</div>
+
+@code {
+    protected IndexViewModel Model { get; set; } = new();
+    protected IUserDependenciesProvider UserDependenciesProvider => Service;
+
+    [Inject]
+    protected IBlazorUserService BlazorUserService { get; set; } = null!;
+
+    [Inject]
+    protected IUserService UserService { get; set; } = null!;
+
+    [Inject]
+    protected ISpecialityRepository SpecialityRepository { get; set; } = null!;
+
+    [Inject]
+    protected SignInManager<IdentityUser> SignInManager { get; set; } = null!;
+
+    [Inject]
+    protected NavigationManager NavigationManager { get; set; } = null!;
+
+    [Parameter]
+    public int? Speciality { get; set; }
+
+    protected int SelectedSpeciality { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Model.Doctors = UserDependenciesProvider.ProvideManager<Doctor>().Users
+            .Include(d => d.Speciality)
+            .Where(d => Speciality == null || d.Speciality.Id == Speciality).ToArray();
+
+        Model.RoleName = await UserService.GetRoleForUser(BlazorUserService.User);
+        Model.Specialities = SpecialityRepository.Specialities.ToArray();
+        Model.SelectedSpeciality = Speciality;
+        var patient = await UserDependenciesProvider.ProvideManager<Patient>().GetUserAsync(BlazorUserService.User);
+        Model.IsActivated = patient?.IsActivated ?? false;
+
+        SelectedSpeciality = Speciality ?? 0;
+    }
+
+    protected void FilterDoctors()
+    {
+        NavigationManager.NavigateTo($"/app/{(SelectedSpeciality == 0 ? null : SelectedSpeciality)}");
+    }
+}
