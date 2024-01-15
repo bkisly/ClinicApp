@@ -48,31 +48,14 @@
                                     {
                                         <td><a asp-action="Edit" asp-route-id="@visit.Id" class="btn btn-outline-primary rounded-pill">Edit</a></td>
                                         <td>
-                                            @*<form asp-action="Complete" method="post">
-                                <input type="hidden" asp-for="@Model.SelectedVisitId" value="@visit.Id" />
-                                <button class="btn btn-outline-success rounded-pill" type="submit">Complete</button>
-                                </form>*@
-
                                             <button class="btn btn-outline-success rounded-pill" @onclick="@(() => CompleteVisit(visit.Id))">Complete</button>
                                         </td>
                                     }
                                     else
                                     {
-                                        <td><a asp-action="Description" asp-route-id="@visit.Id" class="btn btn-outline-primary rounded-pill">View</a></td>
+                                        <td><NavLink href="@($"/app/visit/description/{visit.Id}")" class="btn btn-outline-primary rounded-pill" Match="NavLinkMatch.All">View</NavLink></td>
                                     }
                                     <td>
-                                        @*<form asp-action="Cancel" method="post">
-                                <input type="hidden" asp-for="@Model.SelectedVisitId" value="@visit.Id" />
-                                @if (visit.VisitStatusId == (byte)VisitStatusEnum.Finished)
-                                {
-                                <button class="btn btn-outline-danger rounded-pill" type="submit" disabled>Cancel</button>
-                                }
-                                else
-                                {
-                                <button class="btn btn-outline-danger rounded-pill" type="submit">Cancel</button>
-                                }
-                                </form>*@
-
                                         @if (visit.VisitStatusId == (byte)VisitStatusEnum.Finished)
                                         {
                                             <button class="btn btn-outline-danger rounded-pill" disabled>Cancel</button>

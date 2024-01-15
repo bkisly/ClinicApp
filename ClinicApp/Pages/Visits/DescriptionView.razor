@@ -1,0 +1,36 @@
+﻿@page "/app/visit/description/{VisitId:int}"
+@using ClinicApp.Services.Visit
+@inherits OwningComponentBase<ClinicApp.Services.Visit.IVisitService>
+
+<div class="container text-center py-3">
+    <h1 class="display-4">View description</h1>
+    <NavLink href="/app/visit" class="btn btn-outline-secondary rounded-pill mb-3" Match="NavLinkMatch.All">Back</NavLink>
+
+    <p class="@ContentClass">@(string.IsNullOrEmpty(Description) ? "The doctor hasn't added a description to this visit yet." : Description)</p>
+</div>
+
+@code {
+    protected IVisitService VisitService => Service;
+
+    [Parameter]
+    public int VisitId { get; set; }
+
+    protected string? Description { get; set; }
+    protected string ContentClass { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var visit = await VisitService.FindByIdAsync(VisitId);
+        Description = visit?.Description;
+
+        if (visit == null)
+        {
+            Description = "Visit not found.";
+            ContentClass = "h4 text-danger";
+        }
+        else if (visit.Description == null)
+            ContentClass = "h4 text-muted";
+        else ContentClass = "text-start";
+    }
+
+}
