@@ -1,0 +1,66 @@
+﻿@page "/app/manage/patients"
+@using ClinicApp.Services.User
+@using ClinicApp.Models.Users
+@inherits OwningComponentBase<ClinicApp.Services.User.IUserDependenciesProvider>
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<div class="container py-3 text-center">
+    <div class="mb-3">
+        <h1 class="display-4 mb-3">Patients</h1>
+        <NavLink href="/app/manage" Match="NavLinkMatch.All" class="btn btn-outline-secondary rounded-pill">Back</NavLink>
+    </div>
+
+    @if (Patients.Any())
+    {
+        <table class="table table-borderless table-hover table-striped text-start">
+            <thead>
+            <tr>
+                <th>User name</th>
+                <th>Full name</th>
+                <th>Is activated?</th>
+                <th>Activation</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var patient in Patients)
+            {
+                <tr>
+                    <td>@patient.UserName</td>
+                    <td>@(string.IsNullOrEmpty(patient.FirstName) ? "Not available" : $"{patient.FirstName} {patient.LastName}")</td>
+                    <td>@(patient.IsActivated ? "Yes" : "No")</td>
+                    <td>
+                        <button class="btn btn-outline-success rounded-pill" @onclick="@(() => Activate(patient.Id))">Switch activation</button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="h4 text-muted">There aren't any registered patients.</p>
+    }
+</div>
+
+@code {
+    protected IUserDependenciesProvider UserDependenciesProvider => Service;
+    protected IEnumerable<Patient> Patients { get; set; } = new List<Patient>();
+
+    protected override void OnInitialized()
+    {
+        UpdatePatients();
+    }
+
+    protected void Activate(string patientId)
+    {
+        UserService.SwitchPatientActivation(patientId);
+        UpdatePatients();
+        StateHasChanged();
+    }
+
+    private void UpdatePatients()
+    {
+        Patients = UserDependenciesProvider.ProvideManager<Patient>().Users.ToList();
+    }
+}

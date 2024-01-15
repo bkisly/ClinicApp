@@ -23,7 +23,7 @@
                     @if (IsInRole(Constants.Roles.ManagerRoleName))
                     {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Manage" asp-controller="Home" asp-action="Index">Manage</a>
+                            <NavLink class="nav-link text-dark" href="/app/manage" Match="NavLinkMatch.All">Manage</NavLink>
                         </li>
                     }
                     else if (IsInRole(Constants.Roles.PatientRoleName) || IsInRole(Constants.Roles.DoctorRoleName))
