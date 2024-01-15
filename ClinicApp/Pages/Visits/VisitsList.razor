@@ -7,6 +7,7 @@
 @inject IBlazorUserService BlazorUserService
 @inject IVisitService VisitService
 @inject IUserDependenciesProvider UserDependenciesProvider
+@inject NavigationManager NavigationManager
 
 <div class="container py-3 text-center">
     <CascadingAuthenticationState>
@@ -46,7 +47,7 @@
 
                                     @if (User.IsInRole(Constants.Roles.DoctorRoleName))
                                     {
-                                        <td><a asp-action="Edit" asp-route-id="@visit.Id" class="btn btn-outline-primary rounded-pill">Edit</a></td>
+                                        <td><NavLink href="@($"/app/visit/edit/{visit.Id}")" Match="NavLinkMatch.All" class="btn btn-outline-primary rounded-pill">Edit</NavLink></td>
                                         <td>
                                             <button class="btn btn-outline-success rounded-pill" @onclick="@(() => CompleteVisit(visit.Id))">Complete</button>
                                         </td>
@@ -90,22 +91,29 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        await UpdateVisits();
+    }
+
+    protected async void CompleteVisit(int visitId)
+    {
+        await VisitService.SetStatusAsync(visitId, VisitStatusEnum.Finished);
+        NavigationManager.NavigateTo("/app/visit");
+    }
+
+    protected async void CancelVisit(int visitId)
+    {
+        await VisitService.SetStatusAsync(visitId, VisitStatusEnum.Cancelled);
+        NavigationManager.NavigateTo("/app/visit");
+    }
+
+    private async Task UpdateVisits()
+    {
         Visits.Clear();
         var id = UserDependenciesProvider.DefaultManager.GetUserId(User);
 
-        if(User.IsInRole(Constants.Roles.PatientRoleName))
+        if (User.IsInRole(Constants.Roles.PatientRoleName))
             Visits.AddRange(await VisitService.FindByPatientId(id ?? ""));
-        else if(User.IsInRole(Constants.Roles.DoctorRoleName))
+        else if (User.IsInRole(Constants.Roles.DoctorRoleName))
             Visits.AddRange(await VisitService.FindByDoctorId(id ?? ""));
-    }
-
-    protected void CompleteVisit(int visitId)
-    {
-
-    }
-
-    protected void CancelVisit(int visitId)
-    {
-
     }
 }

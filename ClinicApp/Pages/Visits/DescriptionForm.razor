@@ -1,0 +1,65 @@
+﻿@page "/app/visit/edit/{VisitId:int}"
+
+@using AutoMapper
+@using ClinicApp.Infrastructure.Exceptions
+@using ClinicApp.Services.Visit
+@inherits OwningComponentBase<ClinicApp.Services.Visit.IVisitService>
+@inject NavigationManager NavigationManager
+@inject IMapper Mapper
+
+<div class="container text-center py-3">
+    <h1 class="display-4">Edit description</h1>
+    <NavLink href="/app/visit" Match="NavLinkMatch.All" class="btn btn-outline-secondary rounded-pill mb-3">Back</NavLink>
+    
+    <EditForm EditContext="_editContext" OnInvalidSubmit="Retry" OnValidSubmit="Submit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary class="text-start text-danger"/>
+        <div class="form-floating text-start mb-3">
+            <InputText class="form-control" @bind-Value="Visit.Description" placeholder="Description"/>
+            <label class="form-label">Description</label>
+        </div>
+        <button class="btn btn-outline-primary justify-content-center rounded-pill" type="submit">Submit</button>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public int VisitId { get; set; }
+    protected IVisitService VisitService => Service;
+
+    protected VisitDto Visit = new();
+
+    private EditContext? _editContext;
+    private ValidationMessageStore? _messageStore;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _editContext = new EditContext(Visit);
+        _messageStore = new ValidationMessageStore(_editContext);
+        Visit = Mapper.Map<VisitDto>(await VisitService.FindByIdAsync(VisitId));
+    }
+
+    protected void Retry()
+    {
+        _messageStore?.Clear();
+        Submit();
+    }
+
+    protected async void Submit()
+    {
+        try
+        {
+            await VisitService.UpdateAsync(VisitId, Mapper.Map<Visit>(Visit));
+            NavigationManager.NavigateTo("/app/visit");
+        }
+        catch (VisitConcurrencyException e)
+        {
+            if (e.DbEntity != null)
+            {
+                Visit = Mapper.Map<VisitDto>(e.DbEntity);
+            }
+
+            _messageStore?.Add(() => Visit, e.Message);
+            _editContext?.NotifyValidationStateChanged();
+        }
+    }
+}
