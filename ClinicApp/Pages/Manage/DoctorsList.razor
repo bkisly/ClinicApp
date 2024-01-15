@@ -1,0 +1,61 @@
+﻿@page "/app/manage/doctors"
+@using ClinicApp.Models.Users
+@using ClinicApp.Services.User
+@using ClinicApp.Infrastructure
+@inherits OwningComponentBase<ClinicApp.Services.User.IUserDependenciesProvider>
+
+<div class="container py-3 text-center">
+    <div class="mb-3">
+        <h1 class="display-4 mb-3">Doctors</h1>
+
+        <NavLink Match="NavLinkMatch.All" href="/app/manage" class="btn btn-outline-secondary rounded-pill">Back</NavLink>
+        <NavLink Match="NavLinkMatch.All" href="/app/manage/doctors/register" class="btn btn-outline-primary rounded-pill">Register a doctor</NavLink>
+    </div>
+
+    @if (Doctors.Any())
+    {
+        <table class="table table-borderless table-hover table-striped text-start">
+            <thead>
+                <tr>
+                    <th>User name</th>
+                    <th>Full name</th>
+                    <th>Specialty</th>
+                    <th>Edit schedule</th>
+                    <th>View visits report</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var doctor in Doctors)
+                {
+                    <tr>
+                        <td>@doctor.UserName</td>
+                        <td>@(string.IsNullOrEmpty(doctor.FirstName) ? "Not available" : $"{doctor.FirstName} {doctor.LastName}")</td>
+                        <td>@doctor.Speciality.Name</td>
+                        <td>
+                            <NavLink Match="NavLinkMatch.All" href="@($"/app/manage/doctors/schedule/{doctor.Id}/{DateOnly.FromDateTime(DateTime.Now).WeekNumber()}")"
+                                     class="btn btn-outline-secondary rounded-pill">View schedule</NavLink>
+                        </td>
+                        <td>
+                            <NavLink Match="NavLinkMatch.All" href="@($"/app/manage/doctors/report/{doctor.Id}")" class="btn btn-outline-primary rounded-pill">View report</NavLink>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="h4 text-muted">There aren't any registered doctors.</p>
+    }
+</div>
+
+@code {
+    protected IUserDependenciesProvider USerDependenciesProvider => Service;
+    protected IEnumerable<Doctor> Doctors { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        Doctors = USerDependenciesProvider.ProvideManager<Doctor>().Users.Include(d => d.Speciality).ToList();
+    }
+
+}
