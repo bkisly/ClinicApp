@@ -9,7 +9,7 @@
                 <div class="card-body">
                     <p class="h4">@doctor.DisplayName</p>
                     <p>@doctor.Speciality.Name</p>
-                    <NavLink Match="NavLinkMatch.All" href="#" class="btn btn-outline-primary rounded-pill">Sign up for a visit...</NavLink>
+                    <NavLink Match="NavLinkMatch.All" href="@($"/app/visit/signup/{doctor.Id}")" class="btn btn-outline-primary rounded-pill">Sign up for a visit...</NavLink>
                 </div>
             </div>
         }

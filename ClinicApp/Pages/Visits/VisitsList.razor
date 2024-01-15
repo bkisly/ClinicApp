@@ -97,13 +97,13 @@
     protected async void CompleteVisit(int visitId)
     {
         await VisitService.SetStatusAsync(visitId, VisitStatusEnum.Finished);
-        NavigationManager.NavigateTo("/app/visit");
+        StateHasChanged();
     }
 
     protected async void CancelVisit(int visitId)
     {
         await VisitService.SetStatusAsync(visitId, VisitStatusEnum.Cancelled);
-        NavigationManager.NavigateTo("/app/visit");
+        StateHasChanged();
     }
 
     private async Task UpdateVisits()

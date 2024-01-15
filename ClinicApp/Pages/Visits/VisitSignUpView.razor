@@ -1,0 +1,122 @@
+﻿@page "/app/visit/signup/{DoctorId}"
+@using Microsoft.AspNetCore.Authorization
+@using ClinicApp.Infrastructure
+@using ClinicApp.Models.Users
+@using ClinicApp.Services.Schedule
+@using ClinicApp.Services.User
+@using ClinicApp.Services.Visit
+@using ClinicApp.ViewModels
+@inherits OwningComponentBase<ClinicApp.Services.Visit.IVisitService>
+@attribute [Authorize(Roles = Constants.Roles.PatientRoleName)]
+@inject IScheduleService ScheduleService
+@inject IUserDependenciesProvider UserDependenciesProvider
+@inject IBlazorUserService BlazorUserService
+@inject NavigationManager NavigationManager
+
+<div class="container py-3 text-center">
+    <h1 class="display-4 mb-3">Sign up for a visit</h1>
+    <NavLink href="/app" Match="NavLinkMatch.All" class="btn btn-outline-secondary rounded-pill">Back</NavLink>
+    
+    <CascadingValue Value="_editContext">
+        <ValidationSummary class="text-start text-danger"></ValidationSummary>
+    </CascadingValue>
+
+    @if (Model is { PatientId: not null, IsActivated: true })
+    {
+        @if (Model.AvailableVisits != null && Model.AvailableVisits.Any())
+        {
+            <div class="text-start my-3">
+                @foreach (var group in Model.AvailableVisits.GroupBy(v => v.Date))
+                {
+                    <div class="card my-2">
+                        <div class="card-body">
+                            <h2 class="h4">@group.Key.ToShortDateString()</h2>
+
+                            <div class="row row-cols-auto g-2">
+                                @foreach (var dateTime in group)
+                                {
+                                    <div class="col">
+                                        <button class="btn btn-sm btn-outline-success rounded-pill" @onclick="@(() => SignUp(dateTime))">@dateTime.ToShortTimeString()</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        }
+        else
+        {
+            <p class="h4 text-muted my-3">This doctor does not have any available visits slots.</p>
+        }
+    }
+    else
+    {
+        <p class="h6 text-danger my-3">You must be logged in as a patient and have your account activated in order to sign up for a visit.</p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string DoctorId { get; set; } = string.Empty;
+
+    protected IVisitService VisitService => Service;
+
+    protected VisitViewModel Model { get; set; } = new();
+
+    private EditContext _editContext = null!;
+    private ValidationMessageStore _messageStore = null!;
+
+    private async void SignUp(DateTime dateTime)
+    {
+        _messageStore.Clear();
+
+        try
+        {
+            Model.Date = dateTime;
+            await VisitService.AddAsync(new Visit
+            {
+                Date = Model.Date,
+                DoctorId = Model.DoctorId,
+                PatientId = Model.PatientId!,
+                VisitStatusId = 1
+            });
+
+            NavigationManager.NavigateTo("/app/visit");
+        }
+        catch (Exception e)
+        {
+            _messageStore.Add(() => Model, e.Message);
+            Model.AvailableVisits = await GetAvailableVisitDates(DoctorId);
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _editContext = new EditContext(Model);
+        _messageStore = new ValidationMessageStore(_editContext);
+
+        var patient = await UserDependenciesProvider.ProvideManager<Patient>().GetUserAsync(BlazorUserService.User);
+        Model.DoctorId = DoctorId;
+        Model.PatientId = patient?.Id ?? "";
+        Model.AvailableVisits = await GetAvailableVisitDates(DoctorId);
+        Model.IsActivated = patient?.IsActivated ?? false;
+    }
+
+    private async Task<IEnumerable<DateTime>> GetAvailableVisitDates(string doctorId)
+    {
+        var availableVisits = new List<DateTime>();
+        var scheduleEntries = (await ScheduleService.GetEntriesByDoctor(doctorId))
+            .ToArray();
+
+        foreach (var entry in scheduleEntries)
+            availableVisits.AddRange(VisitService.GetAvailableDatesForScheduleEntry(entry)
+                .Where(d => d >= DateTime.Now)
+                .OrderBy(d => d));
+
+        return availableVisits;
+    }
+
+}
