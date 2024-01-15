@@ -1,4 +1,5 @@
-﻿using ClinicApp.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using ClinicApp.Models;
 
 namespace ClinicApp.Areas.Manage.ViewModels
 {
@@ -6,11 +7,11 @@ namespace ClinicApp.Areas.Manage.ViewModels
     {
         public IEnumerable<Speciality>? Specialities { get; set; }
 
-        public string UserName { get; set; } = string.Empty;
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string ConfirmPassword { get; set; } = string.Empty;
+        [Required] public string UserName { get; set; } = string.Empty;
+        [Required] public string FirstName { get; set; } = string.Empty;
+        [Required] public string LastName { get; set; } = string.Empty;
+        [Required] public string Password { get; set; } = string.Empty;
+        [Required] public string ConfirmPassword { get; set; } = string.Empty;
         public byte SpecialityId { get; set; }
     }
 }

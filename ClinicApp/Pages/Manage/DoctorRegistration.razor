@@ -1,0 +1,105 @@
+﻿@page "/app/manage/doctors/register"
+
+@using ClinicApp.Repositories
+@using ClinicApp.Services.User
+@using ClinicApp.Areas.Manage.ViewModels
+@using ClinicApp.Models.Users
+@inherits OwningComponentBase<ClinicApp.Services.User.IRegistrationService>
+@inject ISpecialityRepository SpecialityRepository
+@inject NavigationManager NavigationManager
+
+<div class="container-sm text-center p-4">
+    <h1 class="display-4">Register</h1>
+    <p>Provide all the required data and register a new doctor.</p>
+    
+    <EditForm EditContext="_editContext" OnValidSubmit="Submit" OnInvalidSubmit="Retry">
+        <ValidationSummary class="text-start text-danger"></ValidationSummary>
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <div class="form-floating my-2">
+            <InputText @bind-Value="Model.UserName" placeholder="User name" class="form-control"/>
+            <label>User name</label>
+        </div>
+        <div class="form-floating my-2">
+            <InputText @bind-Value="Model.FirstName" placeholder="First name" class="form-control" />
+            <label>First name</label>
+        </div>
+        <div class="form-floating my-2">
+            <InputText @bind-Value="Model.LastName" placeholder="Last name" class="form-control" />
+            <label>Last name</label>
+        </div>
+        <div class="form-floating my-2">
+            <InputText @bind-Value="Model.Password" type="password" placeholder="Password" class="form-control" />
+            <label>Password</label>
+        </div>
+        <div class="form-floating my-2">
+            <InputText @bind-Value="Model.ConfirmPassword" type="password" placeholder="Confirm password" class="form-control" />
+            <label>Confirm password</label>
+        </div>
+
+        <div class="text-start my-3">
+            <label class="mb-2">Specialty</label>
+            <InputSelect @bind-Value="Model.SpecialityId" class="form-control">
+                @foreach (var speciality in Specialities)
+                {
+                    <option value="@speciality.Id">@speciality.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <NavLink href="/app/manage/doctors" Match="NavLinkMatch.All" class="btn btn-lg btn-outline-secondary rounded-pill">Back</NavLink>
+        <button type="submit" class="btn btn-outline-primary btn-lg rounded-pill">Register</button>
+    </EditForm>
+</div>
+
+@code {
+    protected IRegistrationService RegistrationService => Service;
+    protected IEnumerable<Speciality> Specialities { get; set; } = null!;
+
+    protected DoctorRegistrationViewModel Model { get; set; } = new() { SpecialityId = 1 };
+
+    private EditContext _editContext = null!;
+    private ValidationMessageStore _messageStore = null!;
+
+    protected void Retry()
+    {
+        _messageStore.Clear();
+        Submit();
+    }
+
+    protected async void Submit()
+    {
+        if (Model.Password != Model.ConfirmPassword)
+        {
+            _messageStore.Add(() => Model, "Passwords do not match,");
+        }
+        else
+        {
+            var doctor = new Doctor
+            {
+                UserName = Model.UserName,
+                SpecialityId = Model.SpecialityId,
+                FirstName = Model.FirstName,
+                LastName = Model.LastName
+            };
+
+            var result = await RegistrationService.RegisterAsync(doctor, Model.Password);
+
+            if(result.Succeeded)
+                NavigationManager.NavigateTo("/app/manage/doctors");
+
+            foreach (var identityError in result.Errors)
+            {
+                _messageStore.Add(() => Model, identityError.Description);
+            }
+        }
+
+        _editContext.NotifyValidationStateChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        _editContext = new EditContext(Model);
+        _messageStore = new ValidationMessageStore(_editContext);
+        Specialities = SpecialityRepository.Specialities.ToArray();
+    }
+}
