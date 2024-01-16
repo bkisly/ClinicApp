@@ -1,0 +1,92 @@
+﻿@page "/app/manage/schedule/new/{DoctorId}"
+@page "/app/manage/schedule/edit/{EntryId:int}"
+@using ClinicApp.Services.Schedule
+@inherits OwningComponentBase<IScheduleService>
+@inject NavigationManager NavigationManager
+
+<div class="container py-3 text-center">
+    <h1 class="display-4">@Title</h1>
+    <NavLink href="@($"/app/manage/schedule/{RoutedDoctorId}")" Match="NavLinkMatch.All" class="btn btn-outline-secondary rounded-pill my-2">Back</NavLink>
+    
+    <EditForm EditContext="_editContext" OnValidSubmit="Submit" OnInvalidSubmit="Retry" class="text-start mt-3">
+        <DataAnnotationsValidator/>
+        <ValidationSummary class="text-start text-danger"/>
+
+        <div class="my-2">
+            <label class="form-label">Date</label>
+            <InputDate Type="InputDateType.Date" @bind-Value="Model.Date" class="form-control"/>
+        </div>
+        <div class="my-2">
+            <label class="form-label">Begin time</label>
+            <InputDate Type="InputDateType.Time" @bind-Value="Model.Begin" class="form-control"/>
+        </div>
+        <div class="my-2">
+            <label class="form-label">End time</label>
+            <InputDate Type="InputDateType.Time" @bind-Value="Model.End" class="form-control"/>
+        </div>
+
+        <button class="btn btn-outline-primary rounded-pill btn-lg" type="submit">Submit</button>
+    </EditForm>
+</div>
+
+@code {
+
+    [Parameter]
+    public string DoctorId { get; set; } = string.Empty;
+
+    [Parameter]
+    public int EntryId { get; set; }
+
+    protected bool IsNewForm => EntryId == 0;
+    protected IScheduleService ScheduleService => Service;
+    protected ScheduleEntry Model { get; set; } = new();
+
+    protected string Title => IsNewForm ? "New schedule entry" : "Edit schedule entry";
+    protected string RoutedDoctorId => IsNewForm ? DoctorId : Model.DoctorId;
+
+    private EditContext _editContext = null!;
+    private ValidationMessageStore _validationMessageStore = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _editContext = new EditContext(Model);
+        _validationMessageStore = new ValidationMessageStore(_editContext);
+
+        if (!IsNewForm)
+        {
+            Model = await ScheduleService.GetByIdAsync(EntryId);
+        }
+        else
+        {
+            Model.Date = DateOnly.FromDateTime(DateTime.Now);
+            Model.DoctorId = DoctorId;
+        }
+    }
+
+    public void Retry()
+    {
+        _validationMessageStore.Clear();
+        Submit();
+    }
+
+    public async void Submit()
+    {
+        if (!_editContext.GetValidationMessages().Any())
+        {
+            try
+            {
+                if (IsNewForm)
+                    await ScheduleService.AddAsync(Model);
+                else await ScheduleService.UpdateAsync(EntryId, Model);
+            
+                NavigationManager.NavigateTo($"/app/manage/schedule/{RoutedDoctorId}");
+            }
+            catch (ArgumentException e)
+            {
+                _validationMessageStore.Add(() => Model, e.Message);
+            }
+        }
+
+        _editContext.NotifyValidationStateChanged();
+    }
+}
