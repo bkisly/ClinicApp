@@ -1,0 +1,101 @@
+﻿@page "/app/manage/schedule/{DoctorId}"
+@using ClinicApp.Services.Schedule
+@using ClinicApp.Infrastructure
+@inherits OwningComponentBase<ClinicApp.Services.Schedule.IScheduleService>
+
+<div class="container py-3 text-center">
+    <h1 class="display-4">View schedule</h1>
+
+    <div class="hstack justify-content-center mb-3">
+        <NavLink class="btn btn-outline-secondary rounded-pill me-2" href="/app/manage/doctors" Match="NavLinkMatch.All">Back</NavLink>
+        <NavLink class="btn btn-outline-success rounded-pill me-2" Match="NavLinkMatch.All" href="@($"/app/manage/schedule/new/{DoctorId}")">New entry</NavLink>
+        
+        <button class="btn btn-outline-primary rounded-pill" @onclick="CopyPreviousWeek">Copy previous week</button>
+    </div>
+
+    <div class="py-3 border rounded mb-3 bg-light">
+        <button class="btn btn-sm btn-outline-primary rounded-pill" @onclick="PreviousWeek">Previous week</button>
+        <span class="fw-semibold my-auto">@DateOnlyExtensions.GetDatesForWeek(WeekNumber).First() - @DateOnlyExtensions.GetDatesForWeek(WeekNumber).Last()</span>
+        <button class="btn btn-sm btn-outline-primary rounded-pill" @onclick="NextWeek">Next week</button>
+    </div>
+
+    @if (ScheduleEntries.Any())
+    {
+        <table class="table table-borderless table-hover table-striped text-start">
+            <thead>
+                <tr>
+                    <td>Date</td>
+                    <td>Begin time</td>
+                    <td>End time</td>
+                    <td>Edit</td>
+                    <td>Delete</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in ScheduleEntries)
+                {
+                    <tr>
+                        <td>@entry.Date.ToLongDateString()</td>
+                        <td>@entry.Begin.ToShortTimeString()</td>
+                        <td>@entry.End.ToShortTimeString()</td>
+                        <td><NavLink class="btn btn-outline-primary rounded-pill" Match="NavLinkMatch.All" href="@($"/app/manage/schedule/edit/{entry.Id}")">Edit</NavLink></td>
+                        <td><button class="btn btn-outline-danger rounded-pill" @onclick="@(() => Delete(entry.Id))">Delete</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="h4 text-muted">There aren't any schedule entries for the selected range.</p>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public string DoctorId { get; set; } = string.Empty;
+
+    protected IScheduleService ScheduleService => Service;
+    protected int WeekNumber { get; set; } = DateOnly.FromDateTime(DateTime.Now).WeekNumber();
+
+    protected IEnumerable<ScheduleEntry> ScheduleEntries { get; set; } = new List<ScheduleEntry>();
+
+    protected override void OnInitialized()
+    {
+        UpdateEntries();
+    }
+
+    protected void NextWeek()
+    {
+        WeekNumber++;
+        UpdateEntries();
+    }
+
+    protected void PreviousWeek()
+    {
+        WeekNumber--;
+        UpdateEntries();
+    }
+
+    protected async void Delete(int entryId)
+    {
+        await ScheduleService.DeleteAsync(entryId);
+        UpdateEntries();
+        StateHasChanged();
+    }
+
+    protected async void CopyPreviousWeek()
+    {
+        await ScheduleService.CopyPreviousWeek(WeekNumber - 1, DoctorId);
+        UpdateEntries();
+        StateHasChanged();
+    }
+
+    private void UpdateEntries()
+    {
+        ScheduleEntries = ScheduleService.GetEntriesByWeek(WeekNumber, DoctorId)
+            .OrderBy(e => e.Date)
+            .ThenBy(e => e.Begin);
+    }
+}

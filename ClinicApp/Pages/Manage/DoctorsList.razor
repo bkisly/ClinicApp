@@ -32,7 +32,7 @@
                         <td>@(string.IsNullOrEmpty(doctor.FirstName) ? "Not available" : $"{doctor.FirstName} {doctor.LastName}")</td>
                         <td>@doctor.Speciality.Name</td>
                         <td>
-                            <NavLink Match="NavLinkMatch.All" href="@($"/app/manage/doctors/schedule/{doctor.Id}/{DateOnly.FromDateTime(DateTime.Now).WeekNumber()}")"
+                            <NavLink Match="NavLinkMatch.All" href="@($"/app/manage/schedule/{doctor.Id}")"
                                      class="btn btn-outline-secondary rounded-pill">View schedule</NavLink>
                         </td>
                         <td>

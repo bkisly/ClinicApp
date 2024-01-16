@@ -28,6 +28,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/app">Client app</a>
+                        </li>
                         @if (User.IsInRole(Constants.Roles.ManagerRoleName))
                         {
                             <li class="nav-item">
